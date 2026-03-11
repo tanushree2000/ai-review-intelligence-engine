@@ -1,0 +1,11 @@
+pandas
+numpy
+scikit-learn
+nltk
+spacy
+matplotlib
+seaborn
+transformers
+sentence-transformers
+streamlit
+faiss-cpu

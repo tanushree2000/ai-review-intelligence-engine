@@ -1,18 +1,18 @@
 import pandas as pd
 from pathlib import Path
 
-DATA_PATH = Path("data")
-OUTPUT_PATH = Path("outputs")
+DATA_DIR = Path("data")
+OUTPUT_DIR = Path("outputs")
 
-OUTPUT_PATH.mkdir(exist_ok=True)
+OUTPUT_DIR.mkdir(exist_ok=True)
 
-def load_reviews():
-    print("Loading reviews...")
-    df = pd.read_csv(DATA_PATH / "sample_reviews.csv")
+def load_data():
+    print("Loading dataset...")
+    df = pd.read_csv(DATA_DIR / "sample_reviews.csv")
     return df
 
-def analyze_reviews(df):
-    print("Analyzing reviews...")
+def sentiment_analysis(df):
+    print("Running sentiment analysis...")
 
     df["sentiment"] = df["review"].apply(
         lambda x: "positive" if "good" in x.lower() else "negative"
@@ -21,13 +21,13 @@ def analyze_reviews(df):
     return df
 
 def save_results(df):
-    output_file = OUTPUT_PATH / "review_results.csv"
+    output_file = OUTPUT_DIR / "review_results.csv"
     df.to_csv(output_file, index=False)
-    print(f"Results saved to {output_file}")
+    print(f"Saved results to {output_file}")
 
 def main():
-    df = load_reviews()
-    df = analyze_reviews(df)
+    df = load_data()
+    df = sentiment_analysis(df)
     save_results(df)
 
 if __name__ == "__main__":

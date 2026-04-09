@@ -36,6 +36,7 @@ Real-world user feedback with 200K+ reviews.
 ## 🔹 Output Files
 - `review_intel_outputs.csv`
 - `review_intel_outputs.jsonl`
+![Output](output.png)
 
 ## 🔹 Goal
 To demonstrate how AI can transform unstructured customer reviews into actionable business insights, helping teams identify and resolve issues faster than manual review methods.

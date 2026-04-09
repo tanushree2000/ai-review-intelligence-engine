@@ -2,6 +2,10 @@
 
 This project is an AI-powered system that analyzes real-world Google Play app reviews and generates structured insights such as sentiment, themes, pain points, delighters, and recommended actions.
 
+# Architecture
+
+![Architecture](architecture.png)
+
 ## 🔹 Features
 - Sentiment Analysis (Positive / Negative / Mixed)
 - Theme Extraction

@@ -1,210 +1,168 @@
-
 import streamlit as st
 import pandas as pd
 import ast
-import re
+import os
 
 st.set_page_config(
     page_title="VoC Review Intelligence Engine",
-    page_icon="🧠",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="collapsed"
 )
 
 st.markdown("""
 <style>
-.metric-card {
-    background: #f8f9fa;
-    border-radius: 12px;
-    padding: 1rem 1.25rem;
-    text-align: center;
-    border: 0.5px solid #e0e0e0;
-}
-.metric-label { font-size: 12px; color: #888; margin-bottom: 4px; }
-.metric-value { font-size: 28px; font-weight: 600; color: #1a1a1a; }
-.badge {
-    display: inline-block;
-    padding: 2px 10px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 500;
-}
-.pos { background: #e1f5ee; color: #085041; }
-.neg { background: #fcebeb; color: #791f1f; }
-.mix { background: #faeeda; color: #633806; }
-.p0  { background: #fcebeb; color: #791f1f; }
-.p1  { background: #faeeda; color: #633806; }
-.p2  { background: #e1f5ee; color: #085041; }
-.eng { background: #e6f1fb; color: #0c447c; }
-.prd { background: #eeedfe; color: #3c3489; }
-.des { background: #fbeaf0; color: #72243e; }
+.metric-card{background:#1e1e2e;border-radius:10px;padding:1.2rem 1rem;text-align:center;border:1px solid #2e2e3e}
+.metric-label{font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.metric-value{font-size:30px;font-weight:600;color:#fff}
+.badge{display:inline-block;padding:3px 10px;border-radius:5px;font-size:12px;font-weight:500;margin:2px}
+.pos{background:#1a3a2a;color:#4caf82}.neg{background:#3a1a1a;color:#e57373}
+.mix{background:#3a301a;color:#ffb74d}.p0{background:#3a1a1a;color:#e57373}
+.p1{background:#3a301a;color:#ffb74d}.p2{background:#1a3a2a;color:#4caf82}
+.eng{background:#1a2a3a;color:#64b5f6}.prd{background:#2a1a3a;color:#ba68c8}.des{background:#3a1a2a;color:#f06292}
+.section-header{font-size:13px;font-weight:500;color:#aaa;text-transform:uppercase;letter-spacing:.06em;margin:1.5rem 0 .75rem;padding-bottom:6px;border-bottom:1px solid #2e2e3e}
+.pain-item{background:#1e1e2e;border-left:3px solid #e57373;border-radius:0 6px 6px 0;padding:8px 12px;margin:6px 0;font-size:13px;color:#ccc}
+.delight-item{background:#1e1e2e;border-left:3px solid #4caf82;border-radius:0 6px 6px 0;padding:8px 12px;margin:6px 0;font-size:13px;color:#ccc}
+.summary-item{background:#1e1e2e;border-radius:8px;padding:10px 14px;margin:6px 0;font-size:13px;color:#ccc;border:1px solid #2e2e3e}
 </style>
 """, unsafe_allow_html=True)
 
-
 @st.cache_data
 def load_data():
-    df = pd.read_csv("review_intel_outputs.csv")
-    def safe_parse(val):
-        try:
-            return ast.literal_eval(val)
-        except:
-            return []
-    df["suggested_actions"] = df["suggested_actions"].apply(safe_parse)
-    df["top_themes"] = df["top_themes"].apply(safe_parse)
-    df["pain_points"] = df["pain_points"].apply(safe_parse)
-    df["delighters"] = df["delighters"].apply(safe_parse)
-    return df
+    base = os.path.dirname(__file__)
+    for p in [
+        os.path.join(base, "outputs", "review_intel_outputs.csv"),
+        os.path.join(base, "review_intel_outputs.csv"),
+    ]:
+        if os.path.exists(p):
+            df = pd.read_csv(p)
+            def safe_parse(val):
+                try: return ast.literal_eval(val)
+                except: return []
+            for col in ["suggested_actions","top_themes","pain_points","delighters"]:
+                df[col] = df[col].apply(safe_parse)
+            return df
+    st.error("CSV not found. Please upload review_intel_outputs.csv to the repo root or outputs/ folder.")
+    st.stop()
 
 df = load_data()
-
-st.title("🧠 Voice of Customer — Review Intelligence Engine")
-st.caption("AI-powered product analytics · Fine-tuned FLAN-T5 · 200,000 Google Play reviews · 20 apps")
-
-st.divider()
-
-col1, col2, col3, col4, col5 = st.columns(5)
-total = len(df)
-pos = (df["sentiment"] == "positive").sum()
-neg = (df["sentiment"] == "negative").sum()
-actions_df = df.explode_actions = []
 
 all_actions = []
 for _, row in df.iterrows():
     for a in row["suggested_actions"]:
         all_actions.append(a)
-actions_flat = pd.DataFrame(all_actions) if all_actions else pd.DataFrame(columns=["owner","priority","action"])
+actions_flat = pd.DataFrame(all_actions) if all_actions else pd.DataFrame(columns=["owner","action","priority"])
 
-p0 = (actions_flat["priority"] == "P0").sum() if len(actions_flat) else 0
+total = len(df)
+pos = (df["sentiment"]=="positive").sum()
+neg = (df["sentiment"]=="negative").sum()
+p0_count = int((actions_flat["priority"]=="P0").sum()) if len(actions_flat) else 0
 total_actions = len(actions_flat)
 
-with col1:
-    st.markdown(f'<div class="metric-card"><div class="metric-label">reviews analyzed</div><div class="metric-value">200K</div></div>', unsafe_allow_html=True)
-with col2:
-    st.markdown(f'<div class="metric-card"><div class="metric-label">bundles processed</div><div class="metric-value">{total}</div></div>', unsafe_allow_html=True)
-with col3:
-    st.markdown(f'<div class="metric-card"><div class="metric-label">positive sentiment</div><div class="metric-value">{pos}%</div></div>', unsafe_allow_html=True)
-with col4:
-    st.markdown(f'<div class="metric-card"><div class="metric-label">actions generated</div><div class="metric-value">{total_actions}</div></div>', unsafe_allow_html=True)
-with col5:
-    st.markdown(f'<div class="metric-card"><div class="metric-label">critical P0 issues</div><div class="metric-value">{p0}</div></div>', unsafe_allow_html=True)
+st.markdown("## Voice of Customer — Review Intelligence Engine")
+st.markdown("<p style='color:#888;font-size:13px;margin-top:-10px'>AI-powered product analytics · Fine-tuned FLAN-T5 · 200,000 Google Play reviews · 20 apps</p>", unsafe_allow_html=True)
+st.divider()
+
+c1,c2,c3,c4,c5 = st.columns(5)
+for col, label, val in zip(
+    [c1,c2,c3,c4,c5],
+    ["Reviews analyzed","Bundles processed","Positive sentiment","Actions generated","Critical P0 issues"],
+    ["200K", total, f"{pos}%", total_actions, p0_count]
+):
+    with col:
+        st.markdown(f'<div class="metric-card"><div class="metric-label">{label}</div><div class="metric-value">{val}</div></div>', unsafe_allow_html=True)
 
 st.divider()
 
-tab1, tab2, tab3 = st.tabs(["📊 Dashboard", "🔍 Explore by App", "📋 Full Results"])
+tab1, tab2, tab3 = st.tabs(["Dashboard", "Explore by App", "Full Results"])
 
 with tab1:
     col_l, col_r = st.columns(2)
-
     with col_l:
-        st.subheader("Sentiment breakdown")
+        st.markdown('<div class="section-header">Sentiment breakdown</div>', unsafe_allow_html=True)
         sent_counts = df["sentiment"].value_counts().reset_index()
-        sent_counts.columns = ["sentiment", "count"]
-        st.bar_chart(sent_counts.set_index("sentiment"))
+        sent_counts.columns = ["sentiment","count"]
+        st.bar_chart(sent_counts.set_index("sentiment"), height=220)
 
-        st.subheader("Sentiment by app")
+        st.markdown('<div class="section-header">Sentiment by app</div>', unsafe_allow_html=True)
         app_sent = df.groupby(["app","sentiment"]).size().unstack(fill_value=0)
-        st.bar_chart(app_sent)
+        st.bar_chart(app_sent, height=300)
 
     with col_r:
-        st.subheader("Action owners")
+        st.markdown('<div class="section-header">Action owners</div>', unsafe_allow_html=True)
         if len(actions_flat):
             owner_counts = actions_flat["owner"].value_counts().reset_index()
-            owner_counts.columns = ["owner", "count"]
-            st.bar_chart(owner_counts.set_index("owner"))
+            owner_counts.columns = ["owner","count"]
+            st.bar_chart(owner_counts.set_index("owner"), height=220)
 
-        st.subheader("Priority distribution")
+        st.markdown('<div class="section-header">Priority distribution</div>', unsafe_allow_html=True)
         if len(actions_flat):
             prio_counts = actions_flat["priority"].value_counts().reset_index()
-            prio_counts.columns = ["priority", "count"]
-            st.bar_chart(prio_counts.set_index("priority"))
+            prio_counts.columns = ["priority","count"]
+            st.bar_chart(prio_counts.set_index("priority"), height=300)
+
+    st.divider()
+    st.markdown('<div class="section-header">All recommended actions</div>', unsafe_allow_html=True)
+    if len(actions_flat):
+        st.dataframe(actions_flat[["priority","owner","action"]].sort_values("priority"), use_container_width=True, hide_index=True)
 
 with tab2:
     apps = sorted(df["app"].unique().tolist())
     selected_app = st.selectbox("Select an app", apps)
+    app_df = df[df["app"]==selected_app]
+    st.markdown(f"<p style='color:#888;font-size:13px'>{len(app_df)} review bundles analyzed for {selected_app}</p>", unsafe_allow_html=True)
 
-    app_df = df[df["app"] == selected_app]
-    st.caption(f"{len(app_df)} review bundles analyzed for {selected_app}")
+    pos_pct = round((app_df["sentiment"]=="positive").mean()*100)
+    app_actions = [a for _, row in app_df.iterrows() for a in row["suggested_actions"]]
+    p0_app = sum(1 for a in app_actions if a.get("priority")=="P0")
 
-    a1, a2 = st.columns(2)
-    with a1:
-        pos_pct = round((app_df["sentiment"] == "positive").mean() * 100)
-        neg_pct = 100 - pos_pct
-        st.metric("Positive sentiment", f"{pos_pct}%")
-        st.metric("Negative sentiment", f"{neg_pct}%")
-    with a2:
-        app_actions = []
-        for _, row in app_df.iterrows():
-            for a in row["suggested_actions"]:
-                app_actions.append(a)
+    a1,a2,a3 = st.columns(3)
+    for col, label, val in zip([a1,a2,a3], ["Positive sentiment","Negative sentiment","P0 critical issues"], [f"{pos_pct}%", f"{100-pos_pct}%", p0_app]):
+        with col:
+            st.markdown(f'<div class="metric-card"><div class="metric-label">{label}</div><div class="metric-value">{val}</div></div>', unsafe_allow_html=True)
+
+    st.write("")
+    col_a, col_b = st.columns(2)
+
+    with col_a:
+        st.markdown('<div class="section-header">Top pain points</div>', unsafe_allow_html=True)
+        pains = [p for _, row in app_df.iterrows() for p in (row["pain_points"] if isinstance(row["pain_points"], list) else []) if isinstance(p, str) and len(p)>10]
+        for p in pains[:5]:
+            st.markdown(f'<div class="pain-item">{p[:150]}</div>', unsafe_allow_html=True)
+        if not pains:
+            st.caption("No pain points detected")
+
+        st.markdown('<div class="section-header">Top delighters</div>', unsafe_allow_html=True)
+        delights = [d for _, row in app_df.iterrows() for d in (row["delighters"] if isinstance(row["delighters"], list) else []) if isinstance(d, str) and len(d)>10]
+        for d in delights[:5]:
+            st.markdown(f'<div class="delight-item">{d[:150]}</div>', unsafe_allow_html=True)
+        if not delights:
+            st.caption("No delighters detected")
+
+    with col_b:
+        st.markdown('<div class="section-header">Recommended actions</div>', unsafe_allow_html=True)
         if app_actions:
-            st.metric("Actions flagged", len(app_actions))
-            p0_app = sum(1 for a in app_actions if a.get("priority") == "P0")
-            st.metric("P0 critical issues", p0_app)
+            for a in app_actions:
+                owner = a.get("owner","")
+                action = a.get("action","")
+                prio = a.get("priority","")
+                oc = {"Engineering":"eng","Product":"prd","Design":"des"}.get(owner,"eng")
+                pc = {"P0":"p0","P1":"p1","P2":"p2"}.get(prio,"p1")
+                st.markdown(f'<div class="summary-item"><span class="badge {pc}">{prio}</span> <span class="badge {oc}">{owner}</span> &nbsp;{action}</div>', unsafe_allow_html=True)
+        else:
+            st.caption("No actions flagged for this app")
 
-    st.subheader("Top pain points")
-    all_pains = []
-    for _, row in app_df.iterrows():
-        pains = row["pain_points"]
-        if isinstance(pains, list):
-            all_pains.extend([p for p in pains if isinstance(p, str) and len(p) > 10])
-    if all_pains:
-        for p in all_pains[:5]:
-            st.markdown(f"- {p[:120]}")
-    else:
-        st.caption("No pain points detected")
-
-    st.subheader("Top delighters")
-    all_delights = []
-    for _, row in app_df.iterrows():
-        dels = row["delighters"]
-        if isinstance(dels, list):
-            all_delights.extend([d for d in dels if isinstance(d, str) and len(d) > 10])
-    if all_delights:
-        for d in all_delights[:5]:
-            st.markdown(f"- {d[:120]}")
-    else:
-        st.caption("No delighters detected")
-
-    st.subheader("Recommended actions")
-    if app_actions:
-        for a in app_actions:
-            owner = a.get("owner","")
-            action = a.get("action","")
-            prio = a.get("priority","")
-            owner_class = {"Engineering":"eng","Product":"prd","Design":"des"}.get(owner,"eng")
-            prio_class = {"P0":"p0","P1":"p1","P2":"p2"}.get(prio,"p1")
-            st.markdown(
-                f'<span class="badge {prio_class}">{prio}</span> &nbsp; '
-                f'<span class="badge {owner_class}">{owner}</span> &nbsp; {action}',
-                unsafe_allow_html=True
-            )
-            st.write("")
-    else:
-        st.caption("No actions flagged for this app")
-
-    st.subheader("Sample summaries")
-    for _, row in app_df.head(5).iterrows():
-        sent = row["sentiment"]
-        badge_class = "pos" if sent == "positive" else "neg" if sent == "negative" else "mix"
-        st.markdown(
-            f'<span class="badge {badge_class}">{sent}</span> &nbsp; {row["summary"]}',
-            unsafe_allow_html=True
-        )
-        st.write("")
+        st.markdown('<div class="section-header">AI summaries</div>', unsafe_allow_html=True)
+        for _, row in app_df.head(5).iterrows():
+            sent = row["sentiment"]
+            bc = "pos" if sent=="positive" else "neg"
+            st.markdown(f'<div class="summary-item"><span class="badge {bc}">{sent}</span> &nbsp;{row["summary"]}</div>', unsafe_allow_html=True)
 
 with tab3:
-    st.subheader("Full results table")
+    st.markdown('<div class="section-header">Full results table</div>', unsafe_allow_html=True)
     display_df = df[["app","sentiment","summary","sample_id"]].copy()
     display_df.columns = ["App","Sentiment","AI Summary","ID"]
-    st.dataframe(display_df, use_container_width=True, height=500)
-
-    csv = df.to_csv(index=False)
-    st.download_button(
-        label="Download full results CSV",
-        data=csv,
-        file_name="voc_review_intelligence_results.csv",
-        mime="text/csv"
-    )
+    st.dataframe(display_df, use_container_width=True, height=500, hide_index=True)
+    st.download_button("Download full results CSV", df.to_csv(index=False), "voc_results.csv", "text/csv")
 
 st.divider()
-st.caption("Built by Tanushree Poojary · MS Information Management, UIUC 2026 · Fine-tuned FLAN-T5 with LoRA · GitHub")
+st.markdown("<p style='color:#555;font-size:12px;text-align:center'>Built by Tanushree Poojary · MS Information Management, UIUC 2026 · Fine-tuned FLAN-T5 with LoRA</p>", unsafe_allow_html=True)

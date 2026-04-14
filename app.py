@@ -43,9 +43,9 @@ section[data-testid="stSidebar"] *{color:#6b7280!important;}
 .kpi-sub{font-size:11px;color:#374151;font-weight:400;border-top:1px solid #1e1e1e;padding-top:6px;margin-top:2px;}
 
 /* Chart cards */
-.cc{background:#161616;border:1px solid #1e1e1e;border-radius:10px;padding:1rem 1.2rem;margin-top:.6rem;}
+.cc{background:#161616;border:1px solid #1e1e1e;border-radius:10px;padding:1rem 1.2rem 0;margin-top:.6rem;}
 .cc-title{font-size:14px;font-weight:600;color:#ffffff;margin-bottom:.2rem;}
-.cc-sub{font-size:12px;color:#4b5563;margin-bottom:.7rem;}
+.cc-sub{font-size:12px;color:#4b5563;margin-bottom:.5rem;}
 
 /* Page header */
 .ph{font-size:38px;font-weight:800;color:#ffffff;letter-spacing:-1.5px;margin:0;line-height:1.1;}
@@ -171,12 +171,12 @@ if page == "Daily Brief":
         app_sent = df.groupby(["app","sentiment"]).size().reset_index(name="count")
         fig = px.bar(app_sent, x="app", y="count", color="sentiment",
                      color_discrete_map={"positive":CYAN,"negative":RED},
-                     barmode="group", height=300)
+                     barmode="group", height=340)
         fig.update_layout(
-            margin=dict(l=40,r=10,t=10,b=120),
+            margin=dict(l=40,r=10,t=10,b=140),
             plot_bgcolor=PLOT_BG, paper_bgcolor=PAPER_BG,
             font=FONT,
-            legend=dict(orientation="h",y=-0.45,x=0,bgcolor="rgba(0,0,0,0)",
+            legend=dict(orientation="h",y=-0.5,x=0.3,bgcolor="rgba(0,0,0,0)",
                         font=dict(color=FONT_COLOR),title_text=""),
             xaxis=dict(showgrid=False,tickangle=-45,title="",
                        tickfont=dict(color=FONT_COLOR,size=10),

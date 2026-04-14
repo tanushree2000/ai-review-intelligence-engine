@@ -5,7 +5,7 @@ import os
 import plotly.express as px
 import plotly.graph_objects as go
 
-st.set_page_config(page_title="VoC Intelligence", layout="wide", initial_sidebar_state="expanded", page_icon=" ")
+st.set_page_config(page_title="Review AI Intelligence System", layout="wide", initial_sidebar_state="expanded", page_icon="🧠")
 
 st.markdown("""
 <style>
@@ -137,7 +137,7 @@ def kpi(label, value, trend, trend_class, sub):
 
 # SIDEBAR
 with st.sidebar:
-    st.markdown('<div class="brand"><span class="brand-dot"></span>VoC Intelligence</div>', unsafe_allow_html=True)
+    st.markdown('<div class="brand"><span class="brand-dot"></span>Review AI Intelligence</div>', unsafe_allow_html=True)
     page = st.radio("", ["Daily Brief","App Deep Dive","Action Board","Full Data"], label_visibility="collapsed")
     st.markdown('<hr style="border:none;border-top:1px solid #1e1e1e;margin:12px 0;">', unsafe_allow_html=True)
 
@@ -155,8 +155,10 @@ with st.sidebar:
 
 # PAGE 1 — DAILY BRIEF
 if page == "Daily Brief":
-    st.markdown('<div class="ph">VoC Intelligence</div>', unsafe_allow_html=True)
+    st.markdown('<div class="ph">Review AI Intelligence System</div>', unsafe_allow_html=True)
     st.markdown('<div class="psub">AI-powered Voice of Customer analytics across 200,000 Google Play reviews. Surfacing user sentiment, critical pain points, and prioritized product actions to drive faster, evidence-based decisions.</div>', unsafe_allow_html=True)
+    st.write("")
+    st.write("")
 
     c1,c2,c3,c4 = st.columns(4)
     with c1: st.markdown(kpi("Reviews Analyzed","200K","↑ 100 bundles processed","kpi-trend-pos","Google Play · 20 apps"), unsafe_allow_html=True)

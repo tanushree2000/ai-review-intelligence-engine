@@ -26,28 +26,28 @@ section[data-testid="stSidebar"] *{color:#6b7280!important;}
 .brand{font-size:15px;font-weight:700;color:#fff!important;letter-spacing:-.2px;padding-bottom:18px;border-bottom:1px solid #1e1e1e;margin-bottom:18px;}
 .brand-dot{display:inline-block;width:8px;height:8px;background:#00d4aa;border-radius:50%;margin-right:8px;}
 
-.snav-sec{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:#2e2e2e!important;margin:18px 0 8px 2px;}
-.sstat{padding:7px 2px;border-bottom:1px solid #1a1a1a;}
-.sstat-l{font-size:11px;color:#3a3a3a!important;}
-.sstat-v{font-size:13px;font-weight:600;color:#9ca3af!important;margin-top:2px;}
+.snav-sec{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:#2e2e2e!important;margin:12px 0 4px 2px;}
+.sstat{padding:5px 2px;border-bottom:1px solid #1a1a1a;}
+.sstat-l{font-size:10px;color:#3a3a3a!important;}
+.sstat-v{font-size:12px;font-weight:600;color:#9ca3af!important;margin-top:1px;}
 
 /* KPI Cards */
-.kpi{background:#161616;border:1px solid #1e1e1e;border-radius:12px;padding:1.5rem 1.6rem;}
-.kpi-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#4b5563;margin-bottom:10px;}
-.kpi-trend-pos{font-size:12px;font-weight:700;color:#00d4aa;margin-bottom:8px;letter-spacing:.01em;}
-.kpi-trend-neg{font-size:12px;font-weight:700;color:#ef4444;margin-bottom:8px;letter-spacing:.01em;}
-.kpi-trend-neu{font-size:12px;font-weight:600;color:#6b7280;margin-bottom:8px;}
-.kpi-value{font-size:44px;font-weight:800;color:#ffffff;line-height:1;letter-spacing:-2px;margin-bottom:10px;}
-.kpi-sub{font-size:12px;color:#374151;font-weight:400;border-top:1px solid #1e1e1e;padding-top:10px;margin-top:2px;}
+.kpi{background:#161616;border:1px solid #1e1e1e;border-radius:10px;padding:.9rem 1.1rem;}
+.kpi-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#4b5563;margin-bottom:4px;}
+.kpi-trend-pos{font-size:12px;font-weight:700;color:#00d4aa;margin-bottom:2px;letter-spacing:.01em;}
+.kpi-trend-neg{font-size:12px;font-weight:700;color:#ef4444;margin-bottom:2px;letter-spacing:.01em;}
+.kpi-trend-neu{font-size:12px;font-weight:600;color:#6b7280;margin-bottom:2px;}
+.kpi-value{font-size:40px;font-weight:800;color:#ffffff;line-height:1;letter-spacing:-2px;margin-bottom:4px;}
+.kpi-sub{font-size:11px;color:#374151;font-weight:400;border-top:1px solid #1e1e1e;padding-top:6px;margin-top:2px;}
 
 /* Chart cards */
-.cc{background:#161616;border:1px solid #1e1e1e;border-radius:10px;padding:1.3rem 1.5rem;margin-top:.8rem;}
-.cc-title{font-size:14px;font-weight:600;color:#ffffff;margin-bottom:.3rem;}
-.cc-sub{font-size:12px;color:#4b5563;margin-bottom:1rem;}
+.cc{background:#161616;border:1px solid #1e1e1e;border-radius:10px;padding:1rem 1.2rem;margin-top:.6rem;}
+.cc-title{font-size:14px;font-weight:600;color:#ffffff;margin-bottom:.2rem;}
+.cc-sub{font-size:12px;color:#4b5563;margin-bottom:.7rem;}
 
 /* Page header */
-.ph{font-size:42px;font-weight:800;color:#ffffff;letter-spacing:-2px;margin:0;line-height:1.1;}
-.psub{font-size:15px;color:#6b7280;margin-bottom:1.8rem;margin-top:8px;font-weight:400;letter-spacing:.02em;line-height:1.6;}
+.ph{font-size:38px;font-weight:800;color:#ffffff;letter-spacing:-1.5px;margin:0;line-height:1.1;}
+.psub{font-size:13px;color:#6b7280;margin-bottom:.8rem;margin-top:4px;font-weight:400;letter-spacing:.01em;line-height:1.5;max-width:860px;}
 
 /* Badges */
 .badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;margin:2px;}

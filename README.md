@@ -1,52 +1,83 @@
 # Review AI Intelligence Engine
 
-An end-to-end AI system that fine-tunes FLAN-T5 with LoRA on 200,000 Google Play reviews across 20 apps, classifies user sentiment at scale, and surfaces structured product insights through a live interactive dashboard.
+An end-to-end AI system that fine-tunes FLAN-T5 with LoRA on 200,000 Google Play reviews across 20 apps, classifies user sentiment at scale, and delivers structured product intelligence through a live interactive dashboard.
 
 **Live Demo:** https://ai-review-intelligence-engine-jsppq2a3uwylunlmmccnjg.streamlit.app
+
+**GitHub:** https://github.com/tanushree2000/ai-review-intelligence-engine
 
 ---
 
 ## What This Project Does
 
-Most product teams read reviews manually. This system replaces that process entirely.
+Most product teams read app reviews manually. This system replaces that process.
 
-It ingests raw Google Play reviews, fine-tunes a language model to understand sentiment in the context of mobile apps, processes reviews in bundles, and outputs structured product intelligence: what users hate, what they love, what the engineering and product team should fix first, and why.
+It ingests raw Google Play reviews, fine-tunes a language model to understand mobile app sentiment, processes reviews in structured bundles, and outputs prioritized product intelligence: what users hate, what they love, which team owns each fix, and why it matters.
 
-The output is not a spreadsheet. It is a live dashboard with four views designed for product analysts and PMs to act on immediately.
+The output is not a spreadsheet. It is a live four-page dashboard built for product analysts and PMs to act on in under 10 seconds.
 
 ---
 
-## Architecture
+## System Architecture
 
 ```
-200,000 Google Play Reviews
-        |
-        v
-  Data Collection
-  (20 apps, Google Play Store API)
-        |
-        v
-  FLAN-T5 Base Model
-  + LoRA Fine-Tuning
-  (3,449 steps, Tesla T4 GPU)
-        |
-        v
-  Sentiment Classification
-  positive / negative / mixed
-  (85.74% accuracy)
-        |
-        v
-  VoC Pipeline
-  Bundle processing, theme extraction,
-  pain points, delighters, action generation
-        |
-        v
-  Structured Output CSV
-  (100 bundles, 35 product actions)
-        |
-        v
-  Streamlit Dashboard
-  Overview / App Analysis / Recommendations / Data Explorer
+ Raw Input
+ 200,000 Google Play Reviews
+ 20 Apps across Gaming, Social, Productivity, Entertainment
+         |
+         v
++---------------------------+
+|    Data Collection        |
+|    Google Play Store API  |
+|    Review cleaning        |
+|    Bundle aggregation     |
++---------------------------+
+         |
+         v
++---------------------------+
+|    Model Training         |
+|    Base: FLAN-T5          |
+|    Method: LoRA           |
+|    Steps: 3,449           |
+|    Hardware: Tesla T4 GPU |
+|    Accuracy: 85.74%       |
++---------------------------+
+         |
+         v
++---------------------------+
+|    Sentiment              |
+|    Classification         |
+|    positive / negative    |
+|    / mixed                |
++---------------------------+
+         |
+         v
++---------------------------+
+|    VoC Pipeline           |
+|    Bundle processing      |
+|    Theme extraction       |
+|    Pain point detection   |
+|    Delighter identification|
+|    Action generation      |
+|    Summary writing        |
++---------------------------+
+         |
+         v
++---------------------------+
+|    Structured Output      |
+|    100 bundles analyzed   |
+|    35 product actions     |
+|    CSV + JSONL export     |
++---------------------------+
+         |
+         v
++---------------------------+
+|    Streamlit Dashboard    |
+|    Overview               |
+|    App Analysis           |
+|    Recommendations        |
+|    Data Explorer          |
++---------------------------+
 ```
 
 ---
@@ -58,27 +89,33 @@ The output is not a spreadsheet. It is a live dashboard with four views designed
 | Base Model | google/flan-t5-base |
 | Fine-tuning Method | LoRA (Low-Rank Adaptation) |
 | Training Steps | 3,449 |
+| Checkpoint | checkpoint-3449 |
 | Hardware | Tesla T4 GPU |
 | Accuracy | 85.74% |
 | Training Data | 200,000 Google Play reviews |
-| Apps Covered | 20 (Candy Crush, WhatsApp, TikTok, Netflix, Spotify, and 15 others) |
-| Output Classes | positive, negative, mixed |
+| Apps Covered | 20 |
+| Output Classes | positive / negative / mixed |
 
-LoRA was chosen specifically to make fine-tuning feasible on a single GPU without degrading the base model's general language understanding. Only a small number of adapter weights are trained, keeping memory footprint low while achieving meaningful accuracy on app-review sentiment.
+LoRA was selected to make fine-tuning feasible on a single GPU. Only adapter weights are trained on top of the frozen base model, keeping memory footprint low while achieving domain-specific accuracy on app review sentiment.
 
 ---
 
 ## Dataset
 
-Reviews were collected from the Google Play Store across 20 high-traffic consumer apps spanning gaming, social media, productivity, and entertainment categories:
+Reviews were collected from the Google Play Store across 20 high-traffic consumer apps:
 
-Candy Crush Saga, Dropbox, Facebook, Facebook Lite, Facebook Messenger, Flipboard, Instagram, LINE, Microsoft PowerPoint, Microsoft Word, Netflix, SHAREit, Skype, Snapchat, Spotify, Subway Surfers, TikTok, Twitter, Viber, WhatsApp
-
-**Key finding from the data:** Despite training the model as a 3-class classifier (positive, negative, mixed), all 100 processed bundles returned binary sentiment. User sentiment on mobile apps is polarized. Users either love an app or they do not. Mixed sentiment was not observed in any bundle, which is itself a meaningful product insight.
+| Category | Apps |
+|---|---|
+| Gaming | Candy Crush Saga, Subway Surfers |
+| Social Media | Facebook, Facebook Lite, Facebook Messenger, Instagram, TikTok, Twitter, WhatsApp, Viber, LINE, Snapchat |
+| Productivity | Microsoft PowerPoint, Microsoft Word, Dropbox |
+| Entertainment | Netflix, Spotify, Flipboard, SHAREit, Skype |
 
 ---
 
 ## Results
+
+### Sentiment Distribution
 
 | Metric | Value |
 |---|---|
@@ -86,48 +123,85 @@ Candy Crush Saga, Dropbox, Facebook, Facebook Lite, Facebook Messenger, Flipboar
 | Bundles analyzed | 100 |
 | Positive bundles | 50 (50%) |
 | Negative bundles | 50 (50%) |
-| Product actions generated | 35 |
-| P0 critical issues | 3 |
-| P1 sprint actions | 25 |
-| P2 backlog items | 7 |
+| Mixed bundles | 0 (0%) |
 
-**Action breakdown by owner:**
+### App-Level Sentiment Breakdown
 
-| Team | Actions |
-|---|---|
-| Engineering | 19 |
-| Product | 10 |
-| Design | 6 |
+| App | Positive | Negative |
+|---|---|---|
+| Candy Crush Saga | 7 | 1 |
+| WhatsApp | 6 | 2 |
+| Microsoft Word | 5 | 1 |
+| Facebook Lite | 4 | 0 |
+| SHAREit | 4 | 3 |
+| Subway Surfers | 4 | 0 |
+| Twitter | 2 | 6 |
+| LINE | 1 | 8 |
+| Facebook | 1 | 5 |
+| TikTok | 3 | 4 |
+| Dropbox | 1 | 4 |
+| Facebook Messenger | 3 | 3 |
+| Flipboard | 2 | 3 |
+| Instagram | 1 | 3 |
+| Skype | 1 | 3 |
 
-Engineering owns 54% of all recommended actions, indicating that product quality and stability issues are the primary driver of user dissatisfaction across these apps, more so than design or strategy gaps.
+### Product Actions Generated
+
+| Priority | Count | Meaning |
+|---|---|---|
+| P0 | 3 | Fix before next release |
+| P1 | 25 | Address this sprint |
+| P2 | 7 | Schedule for backlog |
+| Total | 35 | |
+
+### Action Ownership
+
+| Team | Actions | Share |
+|---|---|---|
+| Engineering | 19 | 54% |
+| Product | 10 | 29% |
+| Design | 6 | 17% |
+
+### Sample Actions Generated by the AI
+
+| Priority | Owner | Action |
+|---|---|---|
+| P0 | Engineering | Fix login/auth issues |
+| P0 | Engineering | Fix crashes and stability |
+| P1 | Product | Reduce ads frequency and placement |
+| P1 | Engineering | Optimize to reduce lag |
+| P1 | Product | Improve subscription UX and value clarity |
+| P2 | Design | Improve UI clarity and navigation |
+
+### Key Finding
+
+Despite training the model as a 3-class classifier (positive, negative, mixed), all 100 processed bundles returned binary sentiment only. User sentiment on mobile apps is polarized. Users either love an app or they do not. Mixed sentiment was not observed in any bundle across 20 apps and 200,000 reviews. This is a meaningful product insight: there is no neutral middle ground in how users experience consumer mobile apps.
 
 ---
 
 ## Dashboard Pages
 
 ### Overview
-High-level sentiment summary across all 20 apps. Includes KPI cards, sentiment-by-app bar chart, cumulative trend line, donut chart, action owner breakdown, and priority distribution. Designed for a 10-second read.
+High-level sentiment summary across all 20 apps. KPI cards, sentiment-by-app bar chart, cumulative trend line, action owner breakdown, and priority distribution. Designed for a 10-second executive read.
 
 ### App Analysis
-Per-app deep dive. Select any of the 20 apps and see deduplicated pain points, product delighters filtered for signal quality, all recommended actions sorted by priority, and AI-generated summaries for every review bundle analyzed.
+Per-app deep dive. Select any of the 20 apps to see deduplicated pain points filtered for signal quality, product delighters, recommended actions sorted by priority, and AI-generated summaries for every bundle analyzed.
 
 ### Recommendations
-Full product backlog of 35 AI-generated actions. Filterable by priority (P0 / P1 / P2) and team owner (Engineering / Product / Design). Designed for sprint planning and cross-functional team alignment.
+Full product backlog of 35 AI-generated actions. Filterable by priority level and team owner. Designed for sprint planning and cross-functional alignment between Engineering, Product, and Design.
 
 ### Data Explorer
-Complete results table with filters by sentiment and app. Exportable as CSV. Shows raw AI summaries for every processed bundle.
+Complete results table filterable by sentiment and app. Exportable as CSV. Displays AI-generated summaries for every processed bundle.
 
 ---
 
 ## Notebooks
 
-Two notebooks cover the full pipeline:
-
 **lora-finetuning-sentiment.ipynb**
-Fine-tunes FLAN-T5 with LoRA on Google Play review data. Covers data preparation, tokenization, LoRA adapter configuration, training loop, evaluation, and checkpoint saving.
+Fine-tunes FLAN-T5 with LoRA on Google Play review data. Covers data preparation, tokenization, LoRA adapter configuration, training loop, checkpoint-3449 evaluation, and accuracy measurement at 85.74%.
 
 **voice-of-customer-voc-review-intelligence-engine.ipynb**
-Runs the full VoC pipeline on top of the fine-tuned model. Processes review bundles, extracts pain points, delighters, and themes, generates prioritized product actions, and outputs the structured CSV that powers the dashboard.
+Runs the full VoC pipeline on the fine-tuned model. Processes review bundles, extracts pain points, delighters, and themes, generates prioritized product actions by owner and severity, and writes structured CSV and JSONL outputs.
 
 ---
 
@@ -136,47 +210,41 @@ Runs the full VoC pipeline on top of the fine-tuned model. Processes review bund
 ```
 ai-review-intelligence-engine/
 |
-|-- app.py                          # Streamlit dashboard (4 pages)
-|-- requirements.txt                # Python dependencies
-|-- review_intel_outputs.csv        # Pipeline output (100 bundles, 35 actions)
+|-- app.py                             # Streamlit dashboard (4 pages)
+|-- requirements.txt                   # Python dependencies
 |
 |-- .streamlit/
-|   |-- config.toml                 # Dark theme configuration
+|   |-- config.toml                    # Dark theme configuration
 |
 |-- notebooks/
 |   |-- lora-finetuning-sentiment.ipynb
 |   |-- voice-of-customer-voc-review-intelligence-engine.ipynb
 |
 |-- outputs/
-    |-- checkpoint-3449/            # Fine-tuned LoRA weights
+|   |-- review_intel_outputs.csv       # 100 bundles, 35 actions
+|   |-- review_intel_outputs.jsonl     # Same data in JSONL format
+|
+|-- scripts/
+|   |-- run_pipeline.py                # Pipeline runner
+|
+|-- data/                              # Raw review data
+|-- models/                            # Model checkpoints
 ```
 
 ---
 
 ## Setup and Installation
 
-**Clone the repository**
-
 ```bash
 git clone https://github.com/tanushree2000/ai-review-intelligence-engine.git
 cd ai-review-intelligence-engine
-```
-
-**Install dependencies**
-
-```bash
 pip install -r requirements.txt
-```
-
-**Run the dashboard**
-
-```bash
 streamlit run app.py
 ```
 
-The app will open at http://localhost:8501
+Opens at http://localhost:8501
 
-**Dependencies**
+**Requirements**
 
 ```
 streamlit>=1.32.0
@@ -188,38 +256,28 @@ plotly>=5.18.0
 
 ## Skills Demonstrated
 
-**Machine Learning**
-Fine-tuning a pre-trained transformer (FLAN-T5) using parameter-efficient methods (LoRA) for a domain-specific classification task. Training on GPU, evaluating with accuracy metrics, and deploying model outputs into a production pipeline.
+**Machine Learning:** Fine-tuning FLAN-T5 with parameter-efficient LoRA adapters for domain-specific sentiment classification. GPU training, checkpoint evaluation, and production deployment.
 
-**Product Analytics**
-Translating raw unstructured user feedback into prioritized, actionable product intelligence. Structuring output by team owner, severity level, and business impact in a format directly usable for sprint planning.
+**Product Analytics:** Translating 200,000 raw reviews into owner-assigned, severity-ranked product actions usable directly for sprint planning.
 
-**Data Engineering**
-Processing 200,000 reviews through a multi-stage pipeline: collection, cleaning, deduplication, bundle aggregation, model inference, theme extraction, and structured output generation.
+**Data Engineering:** Multi-stage pipeline covering collection, cleaning, deduplication, bundle aggregation, model inference, theme extraction, and dual-format output.
 
-**Data Visualization**
-Building an interactive multi-page analytics dashboard with real data, filterable views, and charts designed for non-technical stakeholders to read in under 10 seconds.
+**Data Visualization:** Interactive four-page analytics dashboard with real production data, dynamic filters, and charts designed for non-technical stakeholders.
 
 ---
 
 ## What I Would Do Next
 
-Given more time and compute, the next iterations would be:
-
 1. Expand to 500,000 reviews across 50 apps for broader signal coverage
-2. Add version-based filtering to detect sentiment changes after app updates
-3. Implement true semantic clustering using sentence embeddings rather than keyword matching
-4. Build a pipeline that runs automatically on new reviews weekly
-5. Add competitive benchmarking by comparing pain points across competing apps in the same category
+2. Add version-based filtering to detect sentiment shifts after app updates
+3. Replace keyword clustering with semantic embeddings for more accurate theme grouping
+4. Automate the pipeline to run weekly on new reviews
+5. Add competitive benchmarking to compare pain points across apps in the same category
 
 ---
 
 ## About
 
-Built by Tanushree Poojary 
+Built by Tanushree Poojary, MS Information Management, University of Illinois Urbana-Champaign (UIUC), graduating May 2026.
 
-This project was designed to demonstrate end-to-end AI product analytics capability: from raw data collection through model fine-tuning to deployed, interactive business intelligence.
-
-**GitHub:** https://github.com/tanushree2000/ai-review-intelligence-engine
-
-**Live App:** https://ai-review-intelligence-engine-jsppq2a3uwylunlmmccnjg.streamlit.app
+Designed to demonstrate end-to-end AI product analytics: from data collection through model fine-tuning to deployed, interactive business intelligence.

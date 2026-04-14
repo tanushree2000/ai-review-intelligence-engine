@@ -13,20 +13,20 @@ st.markdown("""
 *{font-family:'Inter',sans-serif!important;box-sizing:border-box;}
 
 .main{background:#0d0d0d;}
-.main .block-container{background:#0d0d0d;padding:0.5rem 2rem 2rem;max-width:100%;}
+.main .block-container{background:#0d0d0d;padding:0.5rem 1.5rem 2rem;max-width:100%;}
 .stApp{background:#0d0d0d!important;}
 [data-testid="stAppViewContainer"]{background:#0d0d0d!important;}
 [data-testid="stHeader"]{background:#0d0d0d!important;display:none;}
 [data-testid="stToolbar"]{display:none!important;}
 [data-testid="stDecoration"]{display:none!important;}
-.block-container{padding-top:1rem!important;}
+.block-container{padding-top:0.5rem!important;}
 
-section[data-testid="stSidebar"]{background:#111111!important;border-right:1px solid #1e1e1e!important;min-width:220px!important;max-width:220px!important;}
-section[data-testid="stSidebar"]>div{padding:1.2rem 1rem;}
+section[data-testid="stSidebar"]{background:#111111!important;border-right:1px solid #1e1e1e!important;min-width:200px!important;max-width:200px!important;}
+section[data-testid="stSidebar"]>div{padding:1rem 0.9rem;}
 section[data-testid="stSidebar"] *{color:#6b7280!important;}
-section[data-testid="stSidebar"] label{font-size:13px!important;font-weight:500!important;}
+section[data-testid="stSidebar"] label{font-size:12px!important;font-weight:500!important;}
 section[data-testid="stSidebar"] .stRadio>div{gap:2px!important;}
-section[data-testid="stSidebar"] .stRadio label{padding:6px 10px!important;border-radius:6px!important;}
+section[data-testid="stSidebar"] .stRadio label{padding:5px 8px!important;border-radius:6px!important;}
 [data-testid="stSidebarNavItems"]{display:none!important;}
 [data-testid="collapsedControl"]{display:none!important;}
 div[data-testid="stSidebarNav"]{display:none!important;}

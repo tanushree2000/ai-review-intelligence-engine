@@ -22,15 +22,22 @@ st.markdown("""
 .block-container{padding-top:1rem!important;}
 
 section[data-testid="stSidebar"]{background:#111111!important;border-right:1px solid #1e1e1e!important;min-width:220px!important;max-width:220px!important;}
-section[data-testid="stSidebar"]>div{padding:1.8rem 1.2rem;}
+section[data-testid="stSidebar"]>div{padding:1.2rem 1rem;}
 section[data-testid="stSidebar"] *{color:#6b7280!important;}
+section[data-testid="stSidebar"] label{font-size:13px!important;font-weight:500!important;}
+section[data-testid="stSidebar"] .stRadio>div{gap:2px!important;}
+section[data-testid="stSidebar"] .stRadio label{padding:6px 10px!important;border-radius:6px!important;}
+[data-testid="stSidebarNavItems"]{display:none!important;}
+[data-testid="collapsedControl"]{display:none!important;}
+.st-emotion-cache-1cypcdb{display:none!important;}
+div[data-testid="stSidebarNav"]{display:none!important;}
 
-.brand{font-size:15px;font-weight:700;color:#fff!important;letter-spacing:-.2px;padding-bottom:18px;border-bottom:1px solid #1e1e1e;margin-bottom:18px;}
-.brand-dot{display:inline-block;width:8px;height:8px;background:#00d4aa;border-radius:50%;margin-right:8px;}
+.brand{font-size:14px;font-weight:700;color:#fff!important;letter-spacing:.2px;padding-bottom:12px;border-bottom:1px solid #1e1e1e;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.brand-dot{display:inline-block;width:7px;height:7px;background:#00d4aa;border-radius:50%;flex-shrink:0;}
 
-.snav-sec{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:#2e2e2e!important;margin:12px 0 4px 2px;}
-.sstat{padding:5px 2px;border-bottom:1px solid #1a1a1a;}
-.sstat-l{font-size:10px;color:#3a3a3a!important;}
+.snav-sec{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:#2a2a2a!important;margin:14px 0 4px 2px;}
+.sstat{padding:5px 2px;border-bottom:1px solid #191919;}
+.sstat-l{font-size:10px;color:#333!important;text-transform:uppercase;letter-spacing:.05em;}
 .sstat-v{font-size:12px;font-weight:600;color:#9ca3af!important;margin-top:1px;}
 
 /* KPI Cards */
@@ -132,13 +139,15 @@ def kpi(label, value, trend, trend_class, sub):
 with st.sidebar:
     st.markdown('<div class="brand"><span class="brand-dot"></span>VoC Intelligence</div>', unsafe_allow_html=True)
     page = st.radio("", ["Daily Brief","App Deep Dive","Action Board","Full Data"], label_visibility="collapsed")
+    st.markdown('<hr style="border:none;border-top:1px solid #1e1e1e;margin:12px 0;">', unsafe_allow_html=True)
 
     st.markdown('<div class="snav-sec">Dataset</div>', unsafe_allow_html=True)
-    for l,v in [("Reviews","200,000"),("Apps","20"),("Bundles",str(total)),("Actions",str(ta))]:
+    for l,v in [("Reviews","200,000"),("Apps","20"),("Bundles",str(total)),("Actions flagged",str(ta))]:
         st.markdown(f'<div class="sstat"><div class="sstat-l">{l}</div><div class="sstat-v">{v}</div></div>', unsafe_allow_html=True)
 
+    st.markdown('<hr style="border:none;border-top:1px solid #1e1e1e;margin:12px 0;">', unsafe_allow_html=True)
     st.markdown('<div class="snav-sec">Model</div>', unsafe_allow_html=True)
-    for l,v in [("Architecture","FLAN-T5 + LoRA"),("Steps","3,449"),("GPU","Tesla T4"),("Accuracy","85.74%")]:
+    for l,v in [("Architecture","FLAN-T5 + LoRA"),("Checkpoint","3,449 steps"),("Hardware","Tesla T4 GPU"),("Accuracy","85.74%")]:
         st.markdown(f'<div class="sstat"><div class="sstat-l">{l}</div><div class="sstat-v">{v}</div></div>', unsafe_allow_html=True)
 
     st.markdown('<br><p style="font-size:10px;color:#1e1e1e;text-align:center;margin-top:2rem">Tanushree Poojary · UIUC 2026</p>', unsafe_allow_html=True)

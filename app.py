@@ -2,44 +2,62 @@ import streamlit as st
 import pandas as pd
 import ast
 import os
+import plotly.express as px
+import plotly.graph_objects as go
 
 st.set_page_config(page_title="VoC Intelligence Engine", layout="wide", initial_sidebar_state="expanded")
 
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 html,body,[class*="css"]{font-family:'Inter',sans-serif;}
+.main .block-container{padding:1.5rem 2rem;background:#f0f2f6;max-width:100%;}
 
-section[data-testid="stSidebar"]{background:#111827!important;min-width:240px!important;max-width:240px!important;}
-section[data-testid="stSidebar"]>div{padding:1.5rem 1.2rem;}
-section[data-testid="stSidebar"] *{color:#9ca3af!important;}
-section[data-testid="stSidebar"] h1,section[data-testid="stSidebar"] strong{color:#fff!important;}
+section[data-testid="stSidebar"]{background:#1e2a3a!important;min-width:230px!important;max-width:230px!important;}
+section[data-testid="stSidebar"]>div{padding:1.2rem 1rem;}
+section[data-testid="stSidebar"] *{color:#8fa3b8!important;}
 
-.main .block-container{background:#f9fafb;padding:2rem 2.5rem;max-width:100%;}
+.brand{font-size:17px;font-weight:700;color:#fff!important;letter-spacing:.3px;padding-bottom:14px;border-bottom:1px solid #2e3e50;margin-bottom:14px;display:block;}
+.snav-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#4a6278!important;margin:14px 0 6px 4px;display:block;}
+.sinfo{background:#162030;border-radius:6px;padding:9px 11px;margin-bottom:6px;}
+.sinfo-lbl{font-size:10px;color:#4a6278!important;text-transform:uppercase;letter-spacing:.06em;}
+.sinfo-val{font-size:15px;font-weight:600;color:#e2e8f0!important;margin-top:1px;}
 
-.page-title{font-size:22px;font-weight:700;color:#111827;margin:0 0 2px;}
-.breadcrumb{font-size:12px;color:#9ca3af;margin-bottom:1.5rem;}
+/* Bootstrap-style metric cards */
+.kcard{background:#fff;border-radius:6px;overflow:hidden;border:none;margin-bottom:4px;}
+.kcard-header{padding:10px 16px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#fff;}
+.kcard-body{padding:14px 16px 12px;}
+.kcard-val{font-size:34px;font-weight:700;line-height:1;margin-bottom:4px;}
+.kcard-sub{font-size:12px;font-weight:400;}
+.h-blue{background:#2563eb;}
+.h-green{background:#059669;}
+.h-red{background:#dc2626;}
+.h-orange{background:#d97706;}
+.h-purple{background:#7c3aed;}
+.h-dark{background:#1e2a3a;}
+.v-blue{color:#2563eb;}
+.v-green{color:#059669;}
+.v-red{color:#dc2626;}
+.v-orange{color:#d97706;}
+.v-purple{color:#7c3aed;}
+.v-dark{color:#1e2a3a;}
+.s-blue{color:#93c5fd;}
+.s-green{color:#6ee7b7;}
+.s-red{color:#fca5a5;}
+.s-orange{color:#fcd34d;}
 
-.mcard{background:#fff;border-radius:10px;padding:1.25rem 1.4rem;border:1px solid #e5e7eb;height:120px;position:relative;}
-.mcard-dark{background:#111827;border-radius:10px;padding:1.25rem 1.4rem;height:120px;position:relative;}
-.mc-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#6b7280;margin-bottom:8px;}
-.mc-label-dk{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#4b5563;margin-bottom:8px;}
-.mc-val{font-size:34px;font-weight:700;color:#111827;line-height:1;}
-.mc-val-dk{font-size:34px;font-weight:700;color:#fff;line-height:1;}
-.mc-sub-g{font-size:12px;color:#10b981;font-weight:500;margin-top:6px;}
-.mc-sub-r{font-size:12px;color:#ef4444;font-weight:500;margin-top:6px;}
-.mc-sub-gr{font-size:12px;color:#6b7280;font-weight:500;margin-top:6px;}
+/* Chart card */
+.ccard{background:#fff;border-radius:6px;padding:1.1rem 1.3rem;margin-top:.8rem;border-top:3px solid #2563eb;}
+.ccard-green{background:#fff;border-radius:6px;padding:1.1rem 1.3rem;margin-top:.8rem;border-top:3px solid #059669;}
+.ccard-red{background:#fff;border-radius:6px;padding:1.1rem 1.3rem;margin-top:.8rem;border-top:3px solid #dc2626;}
+.ccard-orange{background:#fff;border-radius:6px;padding:1.1rem 1.3rem;margin-top:.8rem;border-top:3px solid #d97706;}
+.ccard-purple{background:#fff;border-radius:6px;padding:1.1rem 1.3rem;margin-top:.8rem;border-top:3px solid #7c3aed;}
+.ccard-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#64748b;margin-bottom:.8rem;}
 
-.mc-icon{position:absolute;top:1.25rem;right:1.4rem;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
-.icon-g{background:#d1fae5;}
-.icon-r{background:#fee2e2;}
-.icon-b{background:#dbeafe;}
-.icon-dk{background:#1f2937;}
+.page-hdr{font-size:20px;font-weight:700;color:#1e293b;margin:0 0 2px;}
+.breadcrumb{font-size:12px;color:#94a3b8;margin-bottom:1.2rem;}
 
-.ccard{background:#fff;border-radius:10px;padding:1.25rem 1.4rem;border:1px solid #e5e7eb;margin-top:1rem;}
-.ccard-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#6b7280;margin-bottom:1rem;}
-
-.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;margin:2px;}
+.badge{display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:600;margin:2px;}
 .pos{background:#d1fae5;color:#065f46;}
 .neg{background:#fee2e2;color:#991b1b;}
 .p0{background:#fee2e2;color:#991b1b;}
@@ -49,31 +67,12 @@ section[data-testid="stSidebar"] h1,section[data-testid="stSidebar"] strong{colo
 .prd{background:#ede9fe;color:#5b21b6;}
 .des{background:#fce7f3;color:#9d174d;}
 
-.action-row{background:#f9fafb;border:1px solid #f3f4f6;border-radius:8px;padding:9px 12px;margin:4px 0;font-size:13px;color:#374151;}
-.pain-row{border-left:3px solid #ef4444;background:#fff5f5;border-radius:0 6px 6px 0;padding:8px 12px;margin:4px 0;font-size:13px;color:#374151;}
-.delight-row{border-left:3px solid #10b981;background:#f0fdf4;border-radius:0 6px 6px 0;padding:8px 12px;margin:4px 0;font-size:13px;color:#374151;}
-.summary-row{background:#f9fafb;border:1px solid #f3f4f6;border-radius:8px;padding:9px 12px;margin:4px 0;font-size:13px;color:#374151;}
-
-.sstat{background:#1f2937;border-radius:8px;padding:10px 12px;margin-bottom:8px;}
-.sstat-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:#4b5563!important;}
-.sstat-val{font-size:18px;font-weight:700;color:#fff!important;margin-top:2px;}
-.ssec{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#374151!important;margin:1.2rem 0 .5rem;}
+.arow{background:#f8fafc;border:1px solid #e2e8f0;border-radius:5px;padding:8px 12px;margin:4px 0;font-size:13px;color:#334155;}
+.prow{border-left:3px solid #ef4444;background:#fff5f5;border-radius:0 5px 5px 0;padding:7px 11px;margin:4px 0;font-size:13px;color:#374151;}
+.drow{border-left:3px solid #10b981;background:#f0fdf4;border-radius:0 5px 5px 0;padding:7px 11px;margin:4px 0;font-size:13px;color:#374151;}
+.srow{background:#f8fafc;border:1px solid #e2e8f0;border-radius:5px;padding:8px 12px;margin:4px 0;font-size:13px;color:#334155;}
 </style>
 """, unsafe_allow_html=True)
-
-
-def icon_svg(shape, color):
-    if shape == "bar":
-        return f'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{color}" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="12" width="4" height="9"/><rect x="10" y="6" width="4" height="15"/><rect x="17" y="3" width="4" height="18"/></svg>'
-    elif shape == "up":
-        return f'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>'
-    elif shape == "down":
-        return f'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>'
-    elif shape == "alert":
-        return f'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>'
-    elif shape == "users":
-        return f'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>'
-    return ""
 
 
 @st.cache_data
@@ -102,132 +101,148 @@ total = len(df)
 pos = int((df["sentiment"]=="positive").sum())
 neg = int((df["sentiment"]=="negative").sum())
 p0c = int((af["priority"]=="P0").sum()) if len(af) else 0
+p1c = int((af["priority"]=="P1").sum()) if len(af) else 0
 ta = len(af)
 apps = sorted(df["app"].unique().tolist())
 
+
+def kcard(header_class, val_class, sub_class, label, value, sub):
+    return f'''<div class="kcard">
+        <div class="kcard-header {header_class}">{label}</div>
+        <div class="kcard-body">
+            <div class="kcard-val {val_class}">{value}</div>
+            <div class="kcard-sub {sub_class}">{sub}</div>
+        </div>
+    </div>'''
+
+
 # SIDEBAR
 with st.sidebar:
-    st.markdown('<strong style="font-size:18px;color:#fff!important">VoC Intelligence</strong>', unsafe_allow_html=True)
-    st.markdown('<hr style="border-color:#1f2937;margin:12px 0">', unsafe_allow_html=True)
-
+    st.markdown('<span class="brand">VoC Intelligence</span>', unsafe_allow_html=True)
     page = st.radio("", ["Dashboard","App Explorer","Action Board","Full Results"], label_visibility="collapsed")
-
-    st.markdown('<div class="ssec">Overview</div>', unsafe_allow_html=True)
-    for lbl, val in [("Reviews analyzed","200,000"),("Apps covered","20"),("Actions flagged",str(ta)),("Bundles processed",str(total))]:
-        st.markdown(f'<div class="sstat"><div class="sstat-lbl">{lbl}</div><div class="sstat-val">{val}</div></div>', unsafe_allow_html=True)
-
-    st.markdown('<div class="ssec">Model</div>', unsafe_allow_html=True)
-    for lbl, val in [("Architecture","FLAN-T5 + LoRA"),("Checkpoint","3,449 steps"),("GPU","Tesla T4"),("Accuracy","85.74%")]:
-        st.markdown(f'<div class="sstat"><div class="sstat-lbl">{lbl}</div><div style="font-size:13px;color:#9ca3af;margin-top:2px">{val}</div></div>', unsafe_allow_html=True)
-
-    st.markdown('<br><p style="font-size:11px;color:#374151;text-align:center">Tanushree Poojary · UIUC 2026</p>', unsafe_allow_html=True)
+    st.markdown('<span class="snav-lbl">Dataset</span>', unsafe_allow_html=True)
+    for lbl, val in [("Reviews","200,000"),("Apps","20"),("Bundles",str(total)),("Actions",str(ta))]:
+        st.markdown(f'<div class="sinfo"><div class="sinfo-lbl">{lbl}</div><div class="sinfo-val">{val}</div></div>', unsafe_allow_html=True)
+    st.markdown('<span class="snav-lbl">Model</span>', unsafe_allow_html=True)
+    for lbl, val in [("Architecture","FLAN-T5 + LoRA"),("Steps","3,449"),("GPU","Tesla T4"),("Accuracy","85.74%")]:
+        st.markdown(f'<div class="sinfo"><div class="sinfo-lbl">{lbl}</div><div class="sinfo-val">{val}</div></div>', unsafe_allow_html=True)
+    st.markdown('<br><p style="font-size:10px;color:#2e3e50;text-align:center">Tanushree Poojary · UIUC 2026</p>', unsafe_allow_html=True)
 
 
 if page == "Dashboard":
-    st.markdown('<div class="page-title">Dashboard</div>', unsafe_allow_html=True)
+    st.markdown('<div class="page-hdr">Dashboard</div>', unsafe_allow_html=True)
     st.markdown('<div class="breadcrumb">Home &rsaquo; Dashboard</div>', unsafe_allow_html=True)
 
-    c1,c2,c3,c4 = st.columns(4)
-    with c1:
-        st.markdown(f'''<div class="mcard">
-            <div class="mc-label">Total bundles</div>
-            <div class="mc-val">{total}</div>
-            <div class="mc-sub-g">100 samples processed</div>
-            <div class="mc-icon icon-b">{icon_svg("bar","#2563eb")}</div>
-        </div>''', unsafe_allow_html=True)
-    with c2:
-        st.markdown(f'''<div class="mcard">
-            <div class="mc-label">Positive sentiment</div>
-            <div class="mc-val">{pos}</div>
-            <div class="mc-sub-g">50% of all bundles</div>
-            <div class="mc-icon icon-g">{icon_svg("up","#059669")}</div>
-        </div>''', unsafe_allow_html=True)
-    with c3:
-        st.markdown(f'''<div class="mcard">
-            <div class="mc-label">Negative sentiment</div>
-            <div class="mc-val">{neg}</div>
-            <div class="mc-sub-r">50% needs attention</div>
-            <div class="mc-icon icon-r">{icon_svg("down","#dc2626")}</div>
-        </div>''', unsafe_allow_html=True)
-    with c4:
-        st.markdown(f'''<div class="mcard-dark">
-            <div class="mc-label-dk">Critical P0 issues</div>
-            <div class="mc-val-dk">{p0c}</div>
-            <div class="mc-sub-r">Fix immediately</div>
-            <div class="mc-icon icon-dk">{icon_svg("alert","#ef4444")}</div>
-        </div>''', unsafe_allow_html=True)
+    c1,c2,c3,c4,c5 = st.columns(5)
+    with c1: st.markdown(kcard("h-blue","v-blue","s-blue","Total Reviews","200K","Google Play Store"), unsafe_allow_html=True)
+    with c2: st.markdown(kcard("h-green","v-green","s-green","Bundles Processed",str(total),"100 samples"), unsafe_allow_html=True)
+    with c3: st.markdown(kcard("h-red","v-red","s-red","Negative Sentiment",str(neg),"50% — needs fix"), unsafe_allow_html=True)
+    with c4: st.markdown(kcard("h-orange","v-orange","s-orange","Actions Flagged",str(ta),"Across all apps"), unsafe_allow_html=True)
+    with c5: st.markdown(kcard("h-dark","v-dark","","Critical P0",str(p0c),"Fix immediately"), unsafe_allow_html=True)
 
     st.write("")
-    col_l, col_r = st.columns([1.6, 1])
+    col_l, col_r = st.columns([1.5,1])
 
     with col_l:
         st.markdown('<div class="ccard"><div class="ccard-title">Sentiment by app</div>', unsafe_allow_html=True)
-        app_sent = df.groupby(["app","sentiment"]).size().unstack(fill_value=0)
-        st.bar_chart(app_sent, height=260, color=["#ef4444","#10b981"])
+        app_sent = df.groupby(["app","sentiment"]).size().reset_index(name="count")
+        fig = px.bar(app_sent, x="app", y="count", color="sentiment",
+                     color_discrete_map={"positive":"#059669","negative":"#dc2626"},
+                     barmode="group", height=280)
+        fig.update_layout(margin=dict(l=0,r=0,t=0,b=60), plot_bgcolor="#fff", paper_bgcolor="#fff",
+                          legend=dict(orientation="h",y=-0.25), xaxis_tickangle=-45,
+                          font=dict(family="Inter",size=11), showlegend=True)
+        fig.update_xaxes(showgrid=False)
+        fig.update_yaxes(showgrid=True, gridcolor="#f1f5f9")
+        st.plotly_chart(fig, use_container_width=True, config={"displayModeBar":False})
         st.markdown('</div>', unsafe_allow_html=True)
 
-        st.markdown('<div class="ccard"><div class="ccard-title">Sentiment trend across bundles</div>', unsafe_allow_html=True)
+        st.markdown('<div class="ccard-green"><div class="ccard-title">Cumulative sentiment trend</div>', unsafe_allow_html=True)
         trend = df.sort_values("sample_id").copy()
-        trend["positive"] = (trend["sentiment"]=="positive").cumsum()
-        trend["negative"] = (trend["sentiment"]=="negative").cumsum()
-        st.line_chart(trend.set_index("sample_id")[["positive","negative"]], height=180, color=["#10b981","#ef4444"])
+        trend["Positive"] = (trend["sentiment"]=="positive").cumsum()
+        trend["Negative"] = (trend["sentiment"]=="negative").cumsum()
+        fig2 = go.Figure()
+        fig2.add_trace(go.Scatter(x=trend["sample_id"], y=trend["Positive"], name="Positive", line=dict(color="#059669",width=2.5), fill="tozeroy", fillcolor="rgba(5,150,105,0.08)"))
+        fig2.add_trace(go.Scatter(x=trend["sample_id"], y=trend["Negative"], name="Negative", line=dict(color="#dc2626",width=2.5), fill="tozeroy", fillcolor="rgba(220,38,38,0.08)"))
+        fig2.update_layout(height=200, margin=dict(l=0,r=0,t=0,b=0), plot_bgcolor="#fff", paper_bgcolor="#fff",
+                           legend=dict(orientation="h",y=-0.3), font=dict(family="Inter",size=11))
+        fig2.update_xaxes(showgrid=False, title="Bundle ID")
+        fig2.update_yaxes(showgrid=True, gridcolor="#f1f5f9")
+        st.plotly_chart(fig2, use_container_width=True, config={"displayModeBar":False})
         st.markdown('</div>', unsafe_allow_html=True)
 
     with col_r:
-        st.markdown('<div class="ccard"><div class="ccard-title">Sentiment split</div>', unsafe_allow_html=True)
-        sc = df["sentiment"].value_counts().reset_index()
-        sc.columns = ["sentiment","count"]
-        st.bar_chart(sc.set_index("sentiment"), height=150, color=["#6366f1"])
+        st.markdown('<div class="ccard-purple"><div class="ccard-title">Sentiment split</div>', unsafe_allow_html=True)
+        fig3 = go.Figure(go.Pie(
+            labels=["Positive","Negative"], values=[pos,neg],
+            marker=dict(colors=["#059669","#dc2626"]),
+            hole=0.55, textinfo="percent+label",
+            textfont=dict(family="Inter",size=12)
+        ))
+        fig3.update_layout(height=220, margin=dict(l=0,r=0,t=10,b=0), paper_bgcolor="#fff",
+                           showlegend=False, font=dict(family="Inter"))
+        st.plotly_chart(fig3, use_container_width=True, config={"displayModeBar":False})
         st.markdown('</div>', unsafe_allow_html=True)
 
-        st.markdown('<div class="ccard"><div class="ccard-title">Action owners</div>', unsafe_allow_html=True)
-        oc = af["owner"].value_counts().reset_index()
-        oc.columns = ["owner","count"]
-        st.bar_chart(oc.set_index("owner"), height=150, color=["#111827"])
+        st.markdown('<div class="ccard-orange"><div class="ccard-title">Action owners</div>', unsafe_allow_html=True)
+        if len(af):
+            oc = af["owner"].value_counts().reset_index()
+            oc.columns = ["owner","count"]
+            fig4 = px.bar(oc, x="count", y="owner", orientation="h",
+                          color="owner", color_discrete_sequence=["#2563eb","#7c3aed","#db2777"],
+                          height=160)
+            fig4.update_layout(margin=dict(l=0,r=0,t=0,b=0), plot_bgcolor="#fff", paper_bgcolor="#fff",
+                               showlegend=False, font=dict(family="Inter",size=11))
+            fig4.update_xaxes(showgrid=True, gridcolor="#f1f5f9")
+            fig4.update_yaxes(showgrid=False)
+            st.plotly_chart(fig4, use_container_width=True, config={"displayModeBar":False})
         st.markdown('</div>', unsafe_allow_html=True)
 
-        st.markdown('<div class="ccard"><div class="ccard-title">Priority distribution</div>', unsafe_allow_html=True)
-        pc = af["priority"].value_counts().reset_index()
-        pc.columns = ["priority","count"]
-        st.bar_chart(pc.set_index("priority"), height=150, color=["#f59e0b"])
+        st.markdown('<div class="ccard-red"><div class="ccard-title">Priority distribution</div>', unsafe_allow_html=True)
+        if len(af):
+            pc = af["priority"].value_counts().reset_index()
+            pc.columns = ["priority","count"]
+            fig5 = px.bar(pc, x="priority", y="count",
+                          color="priority", color_discrete_map={"P0":"#dc2626","P1":"#d97706","P2":"#059669"},
+                          height=160)
+            fig5.update_layout(margin=dict(l=0,r=0,t=0,b=0), plot_bgcolor="#fff", paper_bgcolor="#fff",
+                               showlegend=False, font=dict(family="Inter",size=11))
+            fig5.update_xaxes(showgrid=False)
+            fig5.update_yaxes(showgrid=True, gridcolor="#f1f5f9")
+            st.plotly_chart(fig5, use_container_width=True, config={"displayModeBar":False})
         st.markdown('</div>', unsafe_allow_html=True)
 
 
 elif page == "App Explorer":
-    st.markdown('<div class="page-title">App Explorer</div>', unsafe_allow_html=True)
+    st.markdown('<div class="page-hdr">App Explorer</div>', unsafe_allow_html=True)
     st.markdown('<div class="breadcrumb">Home &rsaquo; App Explorer</div>', unsafe_allow_html=True)
 
     sel = st.selectbox("Select an app", apps)
     adf = df[df["app"]==sel]
     aacts = [a for _, row in adf.iterrows() for a in row["suggested_actions"]]
     pp = round((adf["sentiment"]=="positive").mean()*100)
+    np2 = 100 - pp
     p0a = sum(1 for a in aacts if a.get("priority")=="P0")
     p1a = sum(1 for a in aacts if a.get("priority")=="P1")
 
     st.write("")
     c1,c2,c3,c4 = st.columns(4)
-    with c1:
-        st.markdown(f'<div class="mcard"><div class="mc-label">Bundles</div><div class="mc-val">{len(adf)}</div><div class="mc-icon icon-b">{icon_svg("bar","#2563eb")}</div></div>', unsafe_allow_html=True)
-    with c2:
-        sub_c = "mc-sub-g" if pp>=50 else "mc-sub-r"
-        ic = "icon-g" if pp>=50 else "icon-r"
-        sv = icon_svg("up","#059669") if pp>=50 else icon_svg("down","#dc2626")
-        st.markdown(f'<div class="mcard"><div class="mc-label">Positive sentiment</div><div class="mc-val">{pp}%</div><div class="{sub_c}">{"Good signal" if pp>=50 else "Needs attention"}</div><div class="mc-icon {ic}">{sv}</div></div>', unsafe_allow_html=True)
-    with c3:
-        st.markdown(f'<div class="mcard"><div class="mc-label">P0 critical</div><div class="mc-val">{p0a}</div><div class="mc-sub-r">Fix immediately</div><div class="mc-icon icon-r">{icon_svg("alert","#dc2626")}</div></div>', unsafe_allow_html=True)
-    with c4:
-        st.markdown(f'<div class="mcard-dark"><div class="mc-label-dk">P1 this sprint</div><div class="mc-val-dk">{p1a}</div><div class="mc-icon icon-dk">{icon_svg("users","#9ca3af")}</div></div>', unsafe_allow_html=True)
+    with c1: st.markdown(kcard("h-blue","v-blue","s-blue","Bundles Analyzed",str(len(adf)),f"for {sel}"), unsafe_allow_html=True)
+    with c2: st.markdown(kcard("h-green","v-green","s-green","Positive Sentiment",f"{pp}%","Good signal" if pp>=50 else "Low"), unsafe_allow_html=True)
+    with c3: st.markdown(kcard("h-red","v-red","s-red","Negative Sentiment",f"{np2}%","Needs attention"), unsafe_allow_html=True)
+    with c4: st.markdown(kcard("h-orange","v-orange","s-orange","P0 Critical",str(p0a),"Fix immediately"), unsafe_allow_html=True)
 
     st.write("")
     cl, cr = st.columns(2)
+
     with cl:
-        st.markdown('<div class="ccard"><div class="ccard-title">Top pain points</div>', unsafe_allow_html=True)
+        st.markdown('<div class="ccard-red"><div class="ccard-title">Top pain points</div>', unsafe_allow_html=True)
         pains = [p for _, row in adf.iterrows() for p in (row["pain_points"] if isinstance(row["pain_points"],list) else []) if isinstance(p,str) and len(p)>10]
-        for p in pains[:5]: st.markdown(f'<div class="pain-row">{p[:160]}</div>', unsafe_allow_html=True)
+        for p in pains[:5]: st.markdown(f'<div class="prow">{p[:160]}</div>', unsafe_allow_html=True)
         if not pains: st.caption("No pain points detected")
         st.markdown('<br><div class="ccard-title">Top delighters</div>', unsafe_allow_html=True)
         dels = [d for _, row in adf.iterrows() for d in (row["delighters"] if isinstance(row["delighters"],list) else []) if isinstance(d,str) and len(d)>10]
-        for d in dels[:5]: st.markdown(f'<div class="delight-row">{d[:160]}</div>', unsafe_allow_html=True)
+        for d in dels[:5]: st.markdown(f'<div class="drow">{d[:160]}</div>', unsafe_allow_html=True)
         if not dels: st.caption("No delighters detected")
         st.markdown('</div>', unsafe_allow_html=True)
 
@@ -237,17 +252,17 @@ elif page == "App Explorer":
             for a in aacts:
                 oc2 = {"Engineering":"eng","Product":"prd","Design":"des"}.get(a.get("owner",""),"eng")
                 pc2 = {"P0":"p0","P1":"p1","P2":"p2"}.get(a.get("priority",""),"p1")
-                st.markdown(f'<div class="action-row"><span class="badge {pc2}">{a.get("priority","")}</span> <span class="badge {oc2}">{a.get("owner","")}</span> {a.get("action","")}</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="arow"><span class="badge {pc2}">{a.get("priority","")}</span> <span class="badge {oc2}">{a.get("owner","")}</span> {a.get("action","")}</div>', unsafe_allow_html=True)
         else: st.caption("No actions flagged")
         st.markdown('<br><div class="ccard-title">AI summaries</div>', unsafe_allow_html=True)
         for _, row in adf.head(5).iterrows():
             bc = "pos" if row["sentiment"]=="positive" else "neg"
-            st.markdown(f'<div class="summary-row"><span class="badge {bc}">{row["sentiment"]}</span> &nbsp;{row["summary"]}</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="srow"><span class="badge {bc}">{row["sentiment"]}</span> &nbsp;{row["summary"]}</div>', unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
 
 
 elif page == "Action Board":
-    st.markdown('<div class="page-title">Action Board</div>', unsafe_allow_html=True)
+    st.markdown('<div class="page-hdr">Action Board</div>', unsafe_allow_html=True)
     st.markdown('<div class="breadcrumb">Home &rsaquo; Action Board</div>', unsafe_allow_html=True)
 
     st.write("")
@@ -263,9 +278,9 @@ elif page == "Action Board":
     c1,c2,c3 = st.columns(3)
     p0f = int((filt["priority"]=="P0").sum()) if len(filt) else 0
     engf = int((filt["owner"]=="Engineering").sum()) if len(filt) else 0
-    with c1: st.markdown(f'<div class="mcard"><div class="mc-label">Total actions</div><div class="mc-val">{len(filt)}</div><div class="mc-icon icon-b">{icon_svg("bar","#2563eb")}</div></div>', unsafe_allow_html=True)
-    with c2: st.markdown(f'<div class="mcard"><div class="mc-label">P0 critical</div><div class="mc-val">{p0f}</div><div class="mc-sub-r">Fix immediately</div><div class="mc-icon icon-r">{icon_svg("alert","#dc2626")}</div></div>', unsafe_allow_html=True)
-    with c3: st.markdown(f'<div class="mcard-dark"><div class="mc-label-dk">Engineering actions</div><div class="mc-val-dk">{engf}</div><div class="mc-icon icon-dk">{icon_svg("users","#9ca3af")}</div></div>', unsafe_allow_html=True)
+    with c1: st.markdown(kcard("h-blue","v-blue","s-blue","Total Actions",str(len(filt)),"Filtered results"), unsafe_allow_html=True)
+    with c2: st.markdown(kcard("h-red","v-red","s-red","P0 Critical",str(p0f),"Fix immediately"), unsafe_allow_html=True)
+    with c3: st.markdown(kcard("h-dark","v-dark","","Engineering",str(engf),"Actions assigned"), unsafe_allow_html=True)
 
     st.write("")
     st.markdown('<div class="ccard"><div class="ccard-title">All recommended actions</div>', unsafe_allow_html=True)
@@ -273,13 +288,13 @@ elif page == "Action Board":
         for _, row in filt.sort_values("priority").iterrows():
             oc2 = {"Engineering":"eng","Product":"prd","Design":"des"}.get(row["owner"],"eng")
             pc2 = {"P0":"p0","P1":"p1","P2":"p2"}.get(row["priority"],"p1")
-            st.markdown(f'<div class="action-row"><span class="badge {pc2}">{row["priority"]}</span> <span class="badge {oc2}">{row["owner"]}</span> {row["action"]}</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="arow"><span class="badge {pc2}">{row["priority"]}</span> <span class="badge {oc2}">{row["owner"]}</span> {row["action"]}</div>', unsafe_allow_html=True)
     else: st.caption("No actions match filters")
     st.markdown('</div>', unsafe_allow_html=True)
 
 
 elif page == "Full Results":
-    st.markdown('<div class="page-title">Full Results</div>', unsafe_allow_html=True)
+    st.markdown('<div class="page-hdr">Full Results</div>', unsafe_allow_html=True)
     st.markdown('<div class="breadcrumb">Home &rsaquo; Full Results</div>', unsafe_allow_html=True)
 
     st.write("")
@@ -291,11 +306,16 @@ elif page == "Full Results":
     if sf: rdf = rdf[rdf["sentiment"].isin(sf)]
     if appf: rdf = rdf[rdf["app"].isin(appf)]
 
-    st.caption(f"Showing {len(rdf)} of {total} bundles")
-    st.markdown('<div class="ccard">', unsafe_allow_html=True)
+    c1,c2,c3 = st.columns(3)
+    with c1: st.markdown(kcard("h-blue","v-blue","s-blue","Showing",str(len(rdf)),"bundles"), unsafe_allow_html=True)
+    with c2: st.markdown(kcard("h-green","v-green","s-green","Positive",str((rdf["sentiment"]=="positive").sum()),"bundles"), unsafe_allow_html=True)
+    with c3: st.markdown(kcard("h-red","v-red","s-red","Negative",str((rdf["sentiment"]=="negative").sum()),"bundles"), unsafe_allow_html=True)
+
+    st.write("")
+    st.markdown('<div class="ccard"><div class="ccard-title">Results table</div>', unsafe_allow_html=True)
     disp = rdf[["app","sentiment","summary"]].copy()
     disp.columns = ["App","Sentiment","AI Summary"]
     st.dataframe(disp, use_container_width=True, height=460, hide_index=True)
     st.markdown('</div>', unsafe_allow_html=True)
     st.write("")
-    st.download_button("Download results CSV", df.to_csv(index=False), "voc_results.csv", "text/csv")
+    st.download_button("Download CSV", df.to_csv(index=False), "voc_results.csv", "text/csv")

@@ -216,7 +216,7 @@ Given more time and compute, the next iterations would be:
 
 ## About
 
-Built by Tanushree Poojary as part of the MS Information Management program at the University of Illinois Urbana-Champaign (UIUC), graduating May 2026.
+Built by Tanushree Poojary 
 
 This project was designed to demonstrate end-to-end AI product analytics capability: from raw data collection through model fine-tuning to deployed, interactive business intelligence.
 

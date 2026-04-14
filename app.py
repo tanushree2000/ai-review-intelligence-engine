@@ -383,59 +383,16 @@ elif page == "Action Board":
     with c3: st.markdown(kpi("Engineering",str(engf),"↑ items assigned","kpi-trend-pos",""), unsafe_allow_html=True)
 
     st.write("")
-    col_actions, col_charts = st.columns([1.4, 1])
-
-    with col_actions:
-        st.markdown('<div class="cc"><div class="cc-title">All Actions</div><div class="cc-sub">Sorted by priority — P0 critical first</div>', unsafe_allow_html=True)
-        if len(filt):
-            for _,row in filt.sort_values(["priority","owner"]).iterrows():
-                oc2={"Engineering":"eng","Product":"prd","Design":"des"}.get(row["owner"],"eng")
-                pc2={"P0":"p0","P1":"p1","P2":"p2"}.get(row["priority"],"p1")
-                row_class={"P0":"arow arow-p0","P1":"arow arow-p1","P2":"arow arow-p2"}.get(row["priority"],"arow")
-                st.markdown(f'<div class="{row_class}"><span class="badge {pc2}">{row["priority"]}</span> <span class="badge {oc2}">{row["owner"]}</span> <span style="color:#e5e7eb;font-size:13px">{row["action"]}</span></div>', unsafe_allow_html=True)
-        else: st.caption("No actions match filters")
-        st.markdown('</div>', unsafe_allow_html=True)
-
-    with col_charts:
-        st.markdown('<div class="cc"><div class="cc-title">By Owner</div><div class="cc-sub">Action count per team</div>', unsafe_allow_html=True)
-        if len(filt):
-            oc = filt["owner"].value_counts().reset_index()
-            oc.columns = ["owner","count"]
-            fig_oc = px.bar(oc, x="count", y="owner", orientation="h",
-                            color="owner",
-                            color_discrete_map={"Engineering":BLUE,"Product":PURPLE,"Design":PINK},
-                            height=180, text="count")
-            fig_oc.update_traces(textfont=dict(color="#fff",size=12), textposition="inside")
-            fig_oc.update_layout(
-                margin=dict(l=5,r=10,t=5,b=5),
-                plot_bgcolor=PLOT_BG, paper_bgcolor=PAPER_BG,
-                showlegend=False, font=FONT,
-                xaxis=dict(showgrid=True,gridcolor=GRID_COLOR,tickfont=dict(color=FONT_COLOR),title=""),
-                yaxis=dict(showgrid=False,tickfont=dict(color=FONT_COLOR),title="")
-            )
-            st.plotly_chart(fig_oc, use_container_width=True, config={"displayModeBar":False})
-        st.markdown('</div>', unsafe_allow_html=True)
-
-        st.markdown('<div class="cc"><div class="cc-title">By Priority</div><div class="cc-sub">P0 critical · P1 important · P2 backlog</div>', unsafe_allow_html=True)
-        if len(filt):
-            pc = filt["priority"].value_counts().reset_index()
-            pc.columns = ["priority","count"]
-            pc["order"] = pc["priority"].map({"P0":0,"P1":1,"P2":2})
-            pc = pc.sort_values("order")
-            fig_pc = px.bar(pc, x="priority", y="count",
-                            color="priority",
-                            color_discrete_map={"P0":RED,"P1":AMBER,"P2":CYAN},
-                            height=180, text="count")
-            fig_pc.update_traces(textfont=dict(color="#fff",size=13), textposition="inside")
-            fig_pc.update_layout(
-                margin=dict(l=5,r=10,t=5,b=10),
-                plot_bgcolor=PLOT_BG, paper_bgcolor=PAPER_BG,
-                showlegend=False, font=FONT,
-                xaxis=dict(showgrid=False,tickfont=dict(color=FONT_COLOR,size=12),title=""),
-                yaxis=dict(showgrid=False,visible=False)
-            )
-            st.plotly_chart(fig_pc, use_container_width=True, config={"displayModeBar":False})
-        st.markdown('</div>', unsafe_allow_html=True)
+    st.markdown('<div class="cc"><div class="cc-title">All Actions</div><div class="cc-sub">Sorted by priority — P0 critical · P1 important · P2 backlog</div>', unsafe_allow_html=True)
+    if len(filt):
+        for _,row in filt.sort_values(["priority","owner"]).iterrows():
+            oc2={"Engineering":"eng","Product":"prd","Design":"des"}.get(row["owner"],"eng")
+            pc2={"P0":"p0","P1":"p1","P2":"p2"}.get(row["priority"],"p1")
+            row_class={"P0":"arow arow-p0","P1":"arow arow-p1","P2":"arow arow-p2"}.get(row["priority"],"arow")
+            st.markdown(f'<div class="{row_class}"><span class="badge {pc2}">{row["priority"]}</span> <span class="badge {oc2}">{row["owner"]}</span> <span style="color:#e5e7eb;font-size:13px">{row["action"]}</span></div>', unsafe_allow_html=True)
+    else:
+        st.caption("No actions match your filters.")
+    st.markdown('</div>', unsafe_allow_html=True)
 
 
 # PAGE 4 — FULL DATA

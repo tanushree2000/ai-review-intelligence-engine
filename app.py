@@ -190,7 +190,8 @@ if page == "Daily Brief":
         st.plotly_chart(fig, use_container_width=True, config={"displayModeBar":False})
         st.markdown('</div>', unsafe_allow_html=True)
 
-        st.markdown('<div class="cc"><div class="cc-title">Cumulative Sentiment Trend</div><div class="cc-sub">Running total of positive vs negative across 100 bundles</div>', unsafe_allow_html=True)
+    with col_r:
+        st.markdown('<div class="cc"><div class="cc-title">Cumulative Sentiment Trend</div><div class="cc-sub">Running total across 100 bundles</div>', unsafe_allow_html=True)
         trend = df.sort_values("sample_id").copy()
         trend["Positive"] = (trend["sentiment"]=="positive").cumsum()
         trend["Negative"] = (trend["sentiment"]=="negative").cumsum()
@@ -206,9 +207,9 @@ if page == "Daily Brief":
             fill="tozeroy", fillcolor="rgba(239,68,68,0.08)"
         ))
         fig2.update_layout(
-            height=260, margin=dict(l=40,r=10,t=10,b=60),
+            height=300, margin=dict(l=40,r=10,t=10,b=60),
             plot_bgcolor=PLOT_BG, paper_bgcolor=PAPER_BG, font=FONT,
-            legend=dict(orientation="h",y=-0.3,x=0,bgcolor="rgba(0,0,0,0)",
+            legend=dict(orientation="h",y=-0.25,x=0,bgcolor="rgba(0,0,0,0)",
                         font=dict(color=FONT_COLOR)),
             xaxis=dict(showgrid=False,linecolor=GRID_COLOR,
                        tickfont=dict(color=FONT_COLOR),
@@ -220,8 +221,12 @@ if page == "Daily Brief":
         st.plotly_chart(fig2, use_container_width=True, config={"displayModeBar":False})
         st.markdown('</div>', unsafe_allow_html=True)
 
-    with col_r:
-        st.markdown('<div class="cc"><div class="cc-title">Sentiment Split</div><div class="cc-sub">Overall distribution across 100 bundles</div>', unsafe_allow_html=True)
+    # Bottom row — 3 charts horizontal
+    st.write("")
+    b1, b2, b3 = st.columns(3)
+
+    with b1:
+        st.markdown('<div class="cc"><div class="cc-title">Sentiment Split</div><div class="cc-sub">Overall distribution</div>', unsafe_allow_html=True)
         fig3 = go.Figure(go.Pie(
             labels=["Positive","Negative"], values=[pos,neg],
             marker=dict(colors=[CYAN,RED], line=dict(color=PLOT_BG,width=3)),
@@ -232,18 +237,19 @@ if page == "Daily Brief":
         fig3.add_annotation(
             text=f"<b>{round(pos/total*100)}%</b><br>positive",
             x=0.5, y=0.5, showarrow=False,
-            font=dict(family="Inter",size=14,color="#fff")
+            font=dict(family="Inter",size=13,color="#fff")
         )
         fig3.update_layout(
-            height=260, margin=dict(l=10,r=10,t=10,b=40),
+            height=220, margin=dict(l=10,r=10,t=10,b=40),
             paper_bgcolor=PAPER_BG, showlegend=True,
-            legend=dict(orientation="h",x=0.1,y=-0.08,
+            legend=dict(orientation="h",x=0.1,y=-0.1,
                         font=dict(color=FONT_COLOR,size=11)),
             font=dict(family="Inter")
         )
         st.plotly_chart(fig3, use_container_width=True, config={"displayModeBar":False})
         st.markdown('</div>', unsafe_allow_html=True)
 
+    with b2:
         st.markdown('<div class="cc"><div class="cc-title">Action Owners</div><div class="cc-sub">Who owns the fixes</div>', unsafe_allow_html=True)
         if len(af):
             oc = af["owner"].value_counts().reset_index()
@@ -251,10 +257,10 @@ if page == "Daily Brief":
             fig4 = px.bar(oc, x="count", y="owner", orientation="h",
                           color="owner",
                           color_discrete_map={"Engineering":BLUE,"Product":PURPLE,"Design":PINK},
-                          height=160, text="count")
+                          height=220, text="count")
             fig4.update_traces(textfont=dict(color="#fff",size=12), textposition="inside")
             fig4.update_layout(
-                margin=dict(l=10,r=10,t=5,b=5),
+                margin=dict(l=10,r=10,t=5,b=10),
                 plot_bgcolor=PLOT_BG, paper_bgcolor=PAPER_BG,
                 showlegend=False, font=FONT,
                 xaxis=dict(showgrid=True,gridcolor=GRID_COLOR,
@@ -264,18 +270,19 @@ if page == "Daily Brief":
             st.plotly_chart(fig4, use_container_width=True, config={"displayModeBar":False})
         st.markdown('</div>', unsafe_allow_html=True)
 
-        st.markdown('<div class="cc"><div class="cc-title">Priority Breakdown</div><div class="cc-sub">P0 critical · P1 important · P2 backlog</div>', unsafe_allow_html=True)
+    with b3:
+        st.markdown('<div class="cc"><div class="cc-title">Priority Breakdown</div><div class="cc-sub">P0 · P1 · P2 distribution</div>', unsafe_allow_html=True)
         if len(af):
             pc = af["priority"].value_counts().reset_index()
             pc.columns = ["priority","count"]
             fig5 = px.bar(pc, x="priority", y="count",
                           color="priority",
                           color_discrete_map={"P0":RED,"P1":AMBER,"P2":CYAN},
-                          height=160, text="count")
+                          height=220, text="count")
             fig5.update_traces(textfont=dict(color="#fff",size=13,family="Inter"),
                                textposition="inside")
             fig5.update_layout(
-                margin=dict(l=10,r=10,t=5,b=30),
+                margin=dict(l=10,r=10,t=5,b=10),
                 plot_bgcolor=PLOT_BG, paper_bgcolor=PAPER_BG,
                 showlegend=False, font=FONT,
                 xaxis=dict(showgrid=False,tickfont=dict(color=FONT_COLOR,size=12),title=""),

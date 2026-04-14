@@ -361,7 +361,7 @@ elif page == "App Deep Dive":
 # PAGE 3 — ACTION BOARD
 elif page == "Action Board":
     st.markdown('<div class="ph">Action Board</div>', unsafe_allow_html=True)
-    st.markdown('<div class="psub">Product backlog generated from AI analysis of 200,000 user reviews. 35 prioritized actions assigned across Engineering, Product, and Design — ranked by severity to accelerate sprint planning and cross-functional alignment.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="psub">Derived from AI analysis of 200,000 Google Play reviews. 35 product actions triaged by severity across Engineering, Product, and Design — structured for sprint intake and cross-functional execution.</div>', unsafe_allow_html=True)
     st.write("")
     st.write("")
 

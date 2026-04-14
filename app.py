@@ -5,7 +5,7 @@ import os
 import plotly.express as px
 import plotly.graph_objects as go
 
-st.set_page_config(page_title="Review AI Intelligence System", layout="wide", initial_sidebar_state="expanded", page_icon="")
+st.set_page_config(page_title="Review AI Intelligence System", layout="wide", initial_sidebar_state="expanded", page_icon="chart_with_upwards_trend")
 
 st.markdown("""
 <style>
@@ -64,7 +64,7 @@ div[data-testid="stSidebarNavSeparator"]{display:none!important;}
 
 /* Page header */
 .ph{font-size:38px;font-weight:800;color:#ffffff;letter-spacing:-1.5px;margin:0;line-height:1.1;}
-.psub{font-size:13px;color:#6b7280;margin-bottom:1.2rem;margin-top:10px;font-weight:400;letter-spacing:.01em;line-height:1.6;max-width:860px;}
+.psub{font-size:13px;color:#6b7280;margin-bottom:1.4rem;margin-top:14px;font-weight:400;letter-spacing:.01em;line-height:1.6;max-width:860px;padding-bottom:4px;}
 
 /* Badges */
 .badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;margin:2px;}
@@ -105,7 +105,6 @@ PURPLE = "#a78bfa"
 PINK = "#f472b6"
 FONT = dict(family="Inter", size=11, color=FONT_COLOR)
 
-
 @st.cache_data
 def load_data():
     base = os.path.dirname(__file__)
@@ -124,7 +123,6 @@ def load_data():
     st.error("CSV not found.")
     st.stop()
 
-
 df = load_data()
 all_actions = [a for _, row in df.iterrows() for a in row["suggested_actions"]]
 af = pd.DataFrame(all_actions) if all_actions else pd.DataFrame(columns=["owner","action","priority"])
@@ -136,7 +134,6 @@ p1c = int((af["priority"]=="P1").sum()) if len(af) else 0
 ta = len(af)
 apps = sorted(df["app"].unique().tolist())
 
-
 def kpi(label, value, trend, trend_class, sub):
     return f'''<div class="kpi">
         <div class="kpi-label">{label}</div>
@@ -144,7 +141,6 @@ def kpi(label, value, trend, trend_class, sub):
         <div class="kpi-value">{value}</div>
         <div class="kpi-sub">{sub}</div>
     </div>'''
-
 
 # SIDEBAR
 with st.sidebar:
@@ -166,7 +162,6 @@ with st.sidebar:
     st.markdown(f'<div class="sstat-green"><div class="sstat-lbl">Accuracy</div><div class="sstat-val">85.74%</div></div>', unsafe_allow_html=True)
 
     st.markdown('<br><p style="font-size:10px;color:#2a2a2a;text-align:center;padding-top:.5rem;border-top:1px solid #1a1a1a">Tanushree Poojary · UIUC 2026</p>', unsafe_allow_html=True)
-
 
 # PAGE 1: OVERVIEW
 if page == "Overview":
@@ -319,7 +314,6 @@ if page == "Overview":
             st.plotly_chart(fig5, use_container_width=True, config={"displayModeBar":False})
         st.markdown('</div>', unsafe_allow_html=True)
 
-
 # PAGE 2: APP ANALYSIS
 elif page == "App Analysis":
     st.markdown('<div class="ph">App Analysis</div>', unsafe_allow_html=True)
@@ -407,7 +401,6 @@ elif page == "App Analysis":
         st.markdown(f'<div class="srow"><span class="badge {bc}">{row["sentiment"]}</span> &nbsp;{row["summary"]}</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-
 # PAGE 3: ACTION BOARD
 elif page == "Recommendations":
     st.markdown('<div class="ph">Recommendations</div>', unsafe_allow_html=True)
@@ -443,7 +436,6 @@ elif page == "Recommendations":
     else:
         st.caption("No actions match your filters.")
     st.markdown('</div>', unsafe_allow_html=True)
-
 
 # PAGE 4: FULL DATA
 elif page == "Data Explorer":

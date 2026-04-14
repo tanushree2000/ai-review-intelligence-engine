@@ -322,289 +322,80 @@ if page == "Overview":
 
 # PAGE 2: APP ANALYSIS
 elif page == "App Analysis":
-
-    # Add glassmorphism and hover CSS specific to this page
-    st.markdown("""
-    <style>
-    .insight-card{background:rgba(22,22,22,0.85);border-radius:18px;padding:1.2rem 1.4rem;margin-bottom:.8rem;border:1px solid rgba(255,255,255,0.06);backdrop-filter:blur(8px);transition:all .2s ease;}
-    .insight-card:hover{border-color:rgba(255,255,255,0.12);transform:translateY(-1px);}
-
-    .pain-card{background:rgba(30,10,10,0.9);border-radius:16px;padding:1rem 1.2rem;margin-bottom:.7rem;border:1px solid rgba(239,68,68,0.15);border-left:3px solid #ef4444;}
-    .pain-card:hover{border-color:rgba(239,68,68,0.3);}
-    .pain-title{font-size:14px;font-weight:700;color:#fff;margin-bottom:4px;}
-    .pain-meta{font-size:11px;color:#6b7280;margin-bottom:6px;display:flex;gap:10px;align-items:center;}
-    .pain-pct{font-size:13px;font-weight:700;color:#ef4444;}
-    .pain-trend-up{color:#ef4444;font-size:11px;font-weight:700;}
-    .pain-trend-dn{color:#22c55e;font-size:11px;font-weight:700;}
-    .pain-trend-st{color:#6b7280;font-size:11px;font-weight:700;}
-
-    .del-card{background:rgba(10,26,18,0.9);border-radius:16px;padding:1rem 1.2rem;margin-bottom:.7rem;border:1px solid rgba(0,212,170,0.15);border-left:3px solid #00d4aa;}
-    .del-card:hover{border-color:rgba(0,212,170,0.3);}
-    .del-title{font-size:14px;font-weight:700;color:#fff;margin-bottom:4px;}
-    .del-pct{font-size:13px;font-weight:700;color:#00d4aa;}
-
-    .action-card{background:rgba(26,20,8,0.9);border-radius:16px;padding:1rem 1.2rem;margin-bottom:.7rem;border:1px solid rgba(245,158,11,0.15);border-left:3px solid #f59e0b;}
-    .action-card:hover{border-color:rgba(245,158,11,0.3);}
-    .action-title{font-size:13px;font-weight:600;color:#e5e7eb;margin-bottom:4px;}
-    .action-meta{font-size:11px;color:#6b7280;}
-    .impact-high{background:#1a0808;color:#ef4444;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:.06em;}
-    .impact-med{background:#1a1408;color:#f59e0b;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:.06em;}
-    .impact-low{background:#081510;color:#00d4aa;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:.06em;}
-
-    .ai-card{background:rgba(8,15,26,0.95);border-radius:18px;padding:1.3rem 1.5rem;border:1px solid rgba(96,165,250,0.2);border-left:3px solid #60a5fa;}
-    .ai-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#60a5fa;margin-bottom:8px;}
-    .ai-text{font-size:13px;color:#d1d5db;line-height:1.7;}
-
-    .sec-header{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #1e1e1e;}
-    .sec-red{color:#ef4444;}
-    .sec-green{color:#00d4aa;}
-    .sec-amber{color:#f59e0b;}
-    .sec-blue{color:#60a5fa;}
-
-    .filter-row{background:#111111;border-radius:12px;padding:.8rem 1rem;border:1px solid #1e1e1e;margin-bottom:1.2rem;}
-    </style>
-    """, unsafe_allow_html=True)
-
-    st.markdown('<div class="ph">User Feedback Insights</div>', unsafe_allow_html=True)
-    st.markdown('<div class="psub">AI-clustered feedback themes, ranked pain points, and prioritized product actions derived from 200,000 Google Play reviews.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="ph">App Analysis</div>', unsafe_allow_html=True)
+    st.markdown('<div class="psub">Select any of the 20 apps to explore user pain points, product delighters, AI-generated summaries, and prioritized engineering and product actions.</div>', unsafe_allow_html=True)
     st.write("")
 
-    # App selector + filters
-    f1, f2, f3 = st.columns([2,1,1])
-    with f1:
-        sel = st.selectbox("Select App", apps, label_visibility="visible")
-    with f2:
-        rating_filter = st.selectbox("Rating", ["All Ratings","1 star","2 stars","3 stars","4 stars","5 stars"])
-    with f3:
-        region_filter = st.selectbox("Region", ["All Regions","North America","Europe","Asia","Others"])
-
-    adf = df[df["app"]==sel].copy()
+    sel = st.selectbox("", apps, label_visibility="collapsed")
+    adf = df[df["app"]==sel]
     aacts = [a for _,row in adf.iterrows() for a in row["suggested_actions"]]
     pp = round((adf["sentiment"]=="positive").mean()*100)
     p0a = sum(1 for a in aacts if a.get("priority")=="P0")
     p1a = sum(1 for a in aacts if a.get("priority")=="P1")
-    total_bundles = len(adf)
 
-    # KPI row
     st.write("")
-    k1,k2,k3,k4 = st.columns(4)
-    with k1: st.markdown(kpi("Bundles Analyzed", str(total_bundles), "", "kpi-trend-neu", f"for {sel}"), unsafe_allow_html=True)
-    with k2:
+    c1,c2,c3,c4 = st.columns(4)
+    with c1: st.markdown(kpi("Bundles",str(len(adf)),"","kpi-trend-neu",f"for {sel}"), unsafe_allow_html=True)
+    with c2:
         tc = "kpi-trend-pos" if pp>=50 else "kpi-trend-neg"
-        st.markdown(kpi("Positive Sentiment", f"{pp}%", "Good signal" if pp>=50 else "Needs attention", tc, ""), unsafe_allow_html=True)
-    with k3:
-        st.markdown(kpi("P0 Critical", str(p0a), "Fix immediately" if p0a>0 else "None flagged", "kpi-trend-neg" if p0a>0 else "kpi-trend-neu", ""), unsafe_allow_html=True)
-    with k4:
-        st.markdown(kpi("Actions Flagged", str(len(aacts)), "Across all priorities", "kpi-trend-neu", ""), unsafe_allow_html=True)
+        st.markdown(kpi("Positive Sentiment",f"{pp}%","Good signal" if pp>=50 else "Needs attention",tc,""), unsafe_allow_html=True)
+    with c3:
+        st.markdown(kpi("P0 Critical",str(p0a),"Fix immediately" if p0a>0 else "None flagged","kpi-trend-neg" if p0a>0 else "kpi-trend-neu",""), unsafe_allow_html=True)
+    with c4:
+        st.markdown(kpi("P1 Sprint",str(p1a),"Address this sprint","kpi-trend-neu",""), unsafe_allow_html=True)
 
     st.write("")
 
-    # --- Data processing ---
-    LOW_SIGNAL = ["i don't know","not sure what","it's okay","it is okay","good game","nice game",
-                  "great game","love this","ok game","good app","nice app","love it","it's good"]
-
+    # Filter low-signal text
+    LOW_SIGNAL = ["not sure","it's okay","it is okay","ok game","good app","nice app","good game","nice game","love it","it's good","great game","love this"]
     def is_high_signal(text):
-        if not isinstance(text, str) or len(text) < 15: return False
-        tl = text.lower()
-        return not any(ls in tl for ls in LOW_SIGNAL)
+        if not isinstance(text, str) or len(text) < 20: return False
+        return not any(ls in text.lower() for ls in LOW_SIGNAL)
 
-    def cluster_themes(items, max_themes=5):
-        """Simple keyword-based theme clustering"""
-        theme_map = {
-            "Ads and Monetization": ["ad","ads","advertisement","purchase","pay","money","buy","subscription","premium","coin","boost"],
-            "Performance and Stability": ["slow","lag","crash","bug","freeze","glitch","load","stuck","error","performance","battery"],
-            "Game Difficulty": ["hard","easy","difficult","level","impossible","unfair","boost","cheat","stuck on level"],
-            "Missing Features": ["music","old version","bring back","used to","feature","option","setting","before"],
-            "User Experience": ["ui","interface","update","changed","different","worse","better","design","layout","confusing"],
-            "Addictive Gameplay": ["addictive","fun","love","enjoy","relaxing","stress","time","pass","great","perfect"],
-            "Social Features": ["friend","connect","share","facebook","leaderboard","compete","multiplayer"],
-        }
-        theme_counts = {t: [] for t in theme_map}
-        for item in items:
-            if not isinstance(item, str): continue
-            il = item.lower()
-            for theme, keywords in theme_map.items():
-                if any(k in il for k in keywords):
-                    theme_counts[theme].append(item)
-                    break
-        results = [(t, list(dict.fromkeys(v))) for t,v in theme_counts.items() if v]
-        results.sort(key=lambda x: -len(x[1]))
-        return results[:max_themes]
+    pains = list(dict.fromkeys([
+        p for _,row in adf.iterrows()
+        for p in (row["pain_points"] if isinstance(row["pain_points"],list) else [])
+        if is_high_signal(p)
+    ]))
 
-    raw_pains = [p for _,row in adf.iterrows() for p in (row["pain_points"] if isinstance(row["pain_points"],list) else []) if is_high_signal(p)]
-    raw_dels  = [d for _,row in adf.iterrows() for d in (row["delighters"] if isinstance(row["delighters"],list) else []) if is_high_signal(d)]
+    dels = list(dict.fromkeys([
+        d for _,row in adf.iterrows()
+        for d in (row["delighters"] if isinstance(row["delighters"],list) else [])
+        if is_high_signal(d)
+    ]))
 
-    pain_themes = cluster_themes(raw_pains, 5)
-    del_themes  = cluster_themes(raw_dels, 4)
+    cl, cr = st.columns(2)
 
-    total_pain = max(len(raw_pains), 1)
-    total_del  = max(len(raw_dels), 1)
-
-    # --- MAIN GRID ---
-    col_l, col_r = st.columns(2)
-
-    # LEFT: Pain Points
-    with col_l:
-        st.markdown('<div class="sec-header sec-red">Pain Points</div>', unsafe_allow_html=True)
-
-        if pain_themes:
-            severity_map = ["P0","P1","P1","P2","P2"]
-            trend_map    = ["up","up","stable","down","down"]
-            trend_html   = {"up":"<span class='pain-trend-up'>Increasing</span>",
-                            "stable":"<span class='pain-trend-st'>Stable</span>",
-                            "down":"<span class='pain-trend-dn'>Decreasing</span>"}
-            impact_map   = ["High","High","Medium","Medium","Low"]
-
-            for i,(theme, quotes) in enumerate(pain_themes):
-                pct = round(len(quotes)/total_pain*100)
-                sev = severity_map[i] if i < len(severity_map) else "P2"
-                trend = trend_html[trend_map[i] if i < len(trend_map) else "stable"]
-                imp = impact_map[i] if i < len(impact_map) else "Low"
-                imp_cls = {"High":"impact-high","Medium":"impact-med","Low":"impact-low"}[imp]
-                sample = [q[:100] for q in quotes[:2] if len(q)>15]
-
-                st.markdown(f'''<div class="pain-card">
-                    <div class="pain-title">{theme}</div>
-                    <div class="pain-meta">
-                        <span class="pain-pct">{pct}% of mentions</span>
-                        <span class="badge p{'0' if sev=='P0' else '1' if sev=='P1' else '2'}">{sev}</span>
-                        <span class="{imp_cls}">{imp} Impact</span>
-                        {trend}
-                    </div>
-                </div>''', unsafe_allow_html=True)
-                if sample:
-                    with st.expander("View examples"):
-                        for q in sample:
-                            st.markdown(f'<div class="prow" style="margin:4px 0">{q}</div>', unsafe_allow_html=True)
+    with cl:
+        st.markdown('<div class="cc"><div class="cc-title">Pain Points</div><div class="cc-sub">Top friction areas from user reviews</div>', unsafe_allow_html=True)
+        if pains:
+            for p in pains[:8]:
+                st.markdown(f'<div class="prow">{p}</div>', unsafe_allow_html=True)
         else:
-            st.caption("No significant pain points detected for this app.")
-
-        st.write("")
-        st.markdown('<div class="sec-header sec-green">Delighters</div>', unsafe_allow_html=True)
-
-        if del_themes:
-            for i,(theme, quotes) in enumerate(del_themes):
-                pct = round(len(quotes)/total_del*100)
-                sample = [q[:100] for q in quotes[:2] if len(q)>15]
-                st.markdown(f'''<div class="del-card">
-                    <div class="del-title">{theme}</div>
-                    <div class="pain-meta">
-                        <span class="del-pct">{pct}% of mentions</span>
-                    </div>
-                </div>''', unsafe_allow_html=True)
-                if sample:
-                    with st.expander("View examples"):
-                        for q in sample:
-                            st.markdown(f'<div class="drow" style="margin:4px 0">{q}</div>', unsafe_allow_html=True)
+            st.caption("No significant pain points detected.")
+        st.markdown('<div style="margin-top:1.2rem;padding-top:1rem;border-top:1px solid #1e1e1e"><div class="cc-title">Delighters</div><div class="cc-sub" style="margin-bottom:.6rem">What users consistently praise</div>', unsafe_allow_html=True)
+        if dels:
+            for d in dels[:8]:
+                st.markdown(f'<div class="drow">{d}</div>', unsafe_allow_html=True)
         else:
-            st.caption("No delighter themes detected for this app.")
+            st.caption("No delighter themes detected.")
+        st.markdown('</div></div>', unsafe_allow_html=True)
 
-    # RIGHT: Actions + AI Summary
-    with col_r:
-        st.markdown('<div class="sec-header sec-amber">Recommended Actions</div>', unsafe_allow_html=True)
-
+    with cr:
+        st.markdown('<div class="cc"><div class="cc-title">Recommended Actions</div><div class="cc-sub">Triaged by severity for sprint intake</div>', unsafe_allow_html=True)
         if aacts:
-            impact_map_act = {"P0":"High","P1":"High","P2":"Medium","P3":"Low"}
-            imp_cls_map    = {"High":"impact-high","Medium":"impact-med","Low":"impact-low"}
-            pct_map        = {"P0":42,"P1":27,"P2":15,"P3":8}
             for a in sorted(aacts, key=lambda x: x.get("priority","")):
-                pri  = a.get("priority","P2")
-                act  = a.get("action","")
-                own  = a.get("owner","")
-                imp  = impact_map_act.get(pri,"Medium")
-                ic   = imp_cls_map[imp]
-                pct  = pct_map.get(pri,10)
-                oc2  = {"Engineering":"eng","Product":"prd","Design":"des"}.get(own,"eng")
-                pc2  = {"P0":"p0","P1":"p1","P2":"p2"}.get(pri,"p1")
-                rc   = {"P0":"arow-p0","P1":"arow-p1","P2":"arow-p2"}.get(pri,"")
-                st.markdown(f'''<div class="action-card">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-                        <span class="badge {pc2}">{pri}</span>
-                        <span class="badge {oc2}">{own}</span>
-                        <span class="{ic}">{imp} Impact</span>
-                    </div>
-                    <div class="action-title">{act}</div>
-                    <div class="action-meta">Affects approx. {pct}% of users in this segment</div>
-                </div>''', unsafe_allow_html=True)
+                oc2 = {"Engineering":"eng","Product":"prd","Design":"des"}.get(a.get("owner",""),"eng")
+                pc2 = {"P0":"p0","P1":"p1","P2":"p2"}.get(a.get("priority",""),"p1")
+                rc  = {"P0":"arow arow-p0","P1":"arow arow-p1","P2":"arow arow-p2"}.get(a.get("priority",""),"arow")
+                st.markdown(f'<div class="{rc}"><span class="badge {pc2}">{a.get("priority","")}</span> <span class="badge {oc2}">{a.get("owner","")}</span> <span style="color:#e5e7eb">{a.get("action","")}</span></div>', unsafe_allow_html=True)
         else:
             st.caption("No actions flagged for this app.")
-
-        st.write("")
-        st.markdown('<div class="sec-header sec-blue">AI Summary</div>', unsafe_allow_html=True)
-
-        # Generate insight-rich summary from actual data
-        pos_themes_list = [t for t,_ in del_themes[:2]] if del_themes else ["positive experience"]
-        neg_themes_list = [t for t,_ in pain_themes[:2]] if pain_themes else ["some friction points"]
-        pos_str = " and ".join(pos_themes_list).lower()
-        neg_str = " and ".join(neg_themes_list).lower()
-
-        if pp >= 70:
-            sentiment_label = "strongly positive"
-            tension = f"Primary friction comes from {neg_str}, which risks eroding long-term retention if left unaddressed."
-        elif pp >= 50:
-            sentiment_label = "moderately positive"
-            tension = f"However, {neg_str} creates meaningful dissatisfaction. Without targeted fixes, satisfaction scores may decline."
-        else:
-            sentiment_label = "net negative"
-            tension = f"Critical issues around {neg_str} are driving users away. Immediate action is required to stabilize sentiment."
-
-        ai_summary = f"Sentiment for {sel} is {sentiment_label} at {pp}%. Users consistently value {pos_str}. {tension}"
-
-        action_count = len(aacts)
-        ai_detail = f"AI analysis flagged {action_count} product actions across Engineering, Product, and Design. P0 issues ({p0a} total) require resolution before the next release cycle to prevent further sentiment erosion."
-
-        st.markdown(f'''<div class="ai-card">
-            <div class="ai-label">Insight</div>
-            <div class="ai-text">{ai_summary}</div>
-        </div>''', unsafe_allow_html=True)
-        st.markdown(f'''<div class="ai-card" style="margin-top:.6rem">
-            <div class="ai-label">Action Signal</div>
-            <div class="ai-text">{ai_detail}</div>
-        </div>''', unsafe_allow_html=True)
-
-    # BOTTOM: Sentiment trend + Raw feedback
-    st.write("")
-    st.write("")
-    st.markdown('<div class="sec-header sec-blue">Sentiment Trend</div>', unsafe_allow_html=True)
-    trend_df = df[df["app"]==sel].sort_values("sample_id").copy()
-    trend_df["Positive"] = (trend_df["sentiment"]=="positive").cumsum()
-    trend_df["Negative"] = (trend_df["sentiment"]=="negative").cumsum()
-    fig_t = go.Figure()
-    fig_t.add_trace(go.Scatter(x=trend_df["sample_id"], y=trend_df["Positive"], name="Positive",
-        line=dict(color=CYAN, width=2.5), fill="tozeroy", fillcolor="rgba(0,212,170,0.07)"))
-    fig_t.add_trace(go.Scatter(x=trend_df["sample_id"], y=trend_df["Negative"], name="Negative",
-        line=dict(color=RED, width=2.5), fill="tozeroy", fillcolor="rgba(239,68,68,0.07)"))
-    fig_t.update_layout(
-        height=200, margin=dict(l=40,r=10,t=10,b=40),
-        plot_bgcolor=PLOT_BG, paper_bgcolor=PAPER_BG, font=FONT,
-        legend=dict(orientation="h", y=-0.3, x=0, bgcolor="rgba(0,0,0,0)", font=dict(color=FONT_COLOR)),
-        xaxis=dict(showgrid=False, tickfont=dict(color=FONT_COLOR), title=dict(text="Bundle ID", font=dict(color=FONT_COLOR, size=11))),
-        yaxis=dict(showgrid=True, gridcolor=GRID_COLOR, tickfont=dict(color=FONT_COLOR))
-    )
-    st.plotly_chart(fig_t, use_container_width=True, config={"displayModeBar":False})
-
-    # Raw feedback collapsed
-    st.write("")
-    with st.expander("Raw Feedback (deduplicated, high-signal only)"):
-        all_raw = list(dict.fromkeys([
-            t for _,row in adf.iterrows()
-            for col in ["pain_points","delighters"]
-            for t in (row[col] if isinstance(row[col],list) else [])
-            if is_high_signal(t)
-        ]))
-        if all_raw:
-            neg_raw = [r for r in all_raw if any(k in r.lower() for k in ["ad","slow","crash","hard","missing","worse","bug","issue"])]
-            pos_raw = [r for r in all_raw if r not in neg_raw]
-            if neg_raw:
-                st.markdown("**Friction signals:**")
-                for r in neg_raw[:5]:
-                    st.markdown(f'<div class="prow" style="margin:3px 0;font-size:12px">{r[:140]}</div>', unsafe_allow_html=True)
-            if pos_raw:
-                st.markdown("**Positive signals:**")
-                for r in pos_raw[:5]:
-                    st.markdown(f'<div class="drow" style="margin:3px 0;font-size:12px">{r[:140]}</div>', unsafe_allow_html=True)
-        else:
-            st.caption("No high-signal feedback available for this app.")
+        st.markdown('<div style="margin-top:1.2rem;padding-top:1rem;border-top:1px solid #1e1e1e"><div class="cc-title">AI Summaries</div><div class="cc-sub" style="margin-bottom:.6rem">Model-generated insight per bundle</div>', unsafe_allow_html=True)
+        for _,row in adf.iterrows():
+            bc = "pos" if row["sentiment"]=="positive" else "neg"
+            st.markdown(f'<div class="srow"><span class="badge {bc}">{row["sentiment"]}</span> &nbsp;{row["summary"]}</div>', unsafe_allow_html=True)
+        st.markdown('</div></div>', unsafe_allow_html=True)
 
 
 # PAGE 3: ACTION BOARD

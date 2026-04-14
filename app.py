@@ -5,7 +5,7 @@ import os
 import plotly.express as px
 import plotly.graph_objects as go
 
-st.set_page_config(page_title="Review AI Intelligence System", layout="wide", initial_sidebar_state="expanded", page_icon="")
+st.set_page_config(page_title="Review AI Intelligence System", layout="wide", initial_sidebar_state="expanded", page_icon="🧠")
 
 st.markdown("""
 <style>
@@ -70,7 +70,10 @@ div[data-testid="stSidebarNavSeparator"]{display:none!important;}
 .des{background:#2d0a1e;color:#f472b6;}
 
 /* Action/insight rows */
-.arow{background:#1a1a1a;border:1px solid #1e1e1e;border-radius:6px;padding:10px 14px;margin:5px 0;font-size:13px;color:#9ca3af;}
+.arow{border:1px solid #1e1e1e;border-radius:8px;padding:12px 16px;margin:6px 0;font-size:13px;color:#9ca3af;background:#161616;display:flex;align-items:center;gap:10px;}
+.arow-p0{border-left:3px solid #ef4444;background:#1a0f0f;}
+.arow-p1{border-left:3px solid #f59e0b;background:#1a160a;}
+.arow-p2{border-left:3px solid #00d4aa;background:#0a1a16;}
 .prow{border-left:2px solid #ef4444;background:#120808;border-radius:0 6px 6px 0;padding:9px 13px;margin:5px 0;font-size:13px;color:#9ca3af;}
 .drow{border-left:2px solid #00d4aa;background:#081210;border-radius:0 6px 6px 0;padding:9px 13px;margin:5px 0;font-size:13px;color:#9ca3af;}
 .srow{background:#1a1a1a;border:1px solid #1e1e1e;border-radius:6px;padding:10px 14px;margin:5px 0;font-size:13px;color:#9ca3af;}
@@ -153,7 +156,7 @@ with st.sidebar:
     st.markdown('<br><p style="font-size:10px;color:#1e1e1e;text-align:center;margin-top:2rem">Tanushree Poojary · UIUC 2026</p>', unsafe_allow_html=True)
 
 
-# PAGE 1 DAILY BRIEF
+# PAGE 1 — DAILY BRIEF
 if page == "Daily Brief":
     st.markdown('<div class="ph">Review AI Intelligence System</div>', unsafe_allow_html=True)
     st.markdown('<div class="psub">AI-powered Voice of Customer analytics across 200,000 Google Play reviews. Surfacing user sentiment, critical pain points, and prioritized product actions to drive faster, evidence-based decisions.</div>', unsafe_allow_html=True)
@@ -232,7 +235,7 @@ if page == "Daily Brief":
         st.plotly_chart(fig2, use_container_width=True, config={"displayModeBar":False})
         st.markdown('</div>', unsafe_allow_html=True)
 
-    # Bottom row 3 charts horizontal
+    # Bottom row — 3 charts horizontal
     st.write("")
     b1, b2, b3 = st.columns(3)
 
@@ -305,7 +308,7 @@ if page == "Daily Brief":
         st.markdown('</div>', unsafe_allow_html=True)
 
 
-# PAGE 2 APP DEEP DIVE
+# PAGE 2 — APP DEEP DIVE
 elif page == "App Deep Dive":
     st.markdown('<div class="ph">App Deep Dive</div>', unsafe_allow_html=True)
     st.markdown('<div class="psub">Select any of the 20 apps to explore user pain points, product delighters, AI-generated summaries, and prioritized engineering and product actions.</div>', unsafe_allow_html=True)
@@ -355,10 +358,12 @@ elif page == "App Deep Dive":
         st.markdown('</div>', unsafe_allow_html=True)
 
 
-# PAGE 3 ACTION BOARD
+# PAGE 3 — ACTION BOARD
 elif page == "Action Board":
     st.markdown('<div class="ph">Action Board</div>', unsafe_allow_html=True)
-    st.markdown('<div class="psub">35 AI-generated product actions ranked by severity. Filter by priority level and team ownership to build your sprint backlog and align engineering, product, and design teams.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="psub">Product backlog generated from AI analysis of 200,000 user reviews. 35 prioritized actions assigned across Engineering, Product, and Design — ranked by severity to accelerate sprint planning and cross-functional alignment.</div>', unsafe_allow_html=True)
+    st.write("")
+    st.write("")
 
     st.write("")
     f1,f2 = st.columns(2)
@@ -378,17 +383,62 @@ elif page == "Action Board":
     with c3: st.markdown(kpi("Engineering",str(engf),"↑ items assigned","kpi-trend-pos",""), unsafe_allow_html=True)
 
     st.write("")
-    st.markdown('<div class="cc"><div class="cc-title">All Actions</div><div class="cc-sub">Sorted by priority</div>', unsafe_allow_html=True)
-    if len(filt):
-        for _,row in filt.sort_values("priority").iterrows():
-            oc2={"Engineering":"eng","Product":"prd","Design":"des"}.get(row["owner"],"eng")
-            pc2={"P0":"p0","P1":"p1","P2":"p2"}.get(row["priority"],"p1")
-            st.markdown(f'<div class="arow"><span class="badge {pc2}">{row["priority"]}</span> <span class="badge {oc2}">{row["owner"]}</span> {row["action"]}</div>', unsafe_allow_html=True)
-    else: st.caption("No actions match filters")
-    st.markdown('</div>', unsafe_allow_html=True)
+    col_actions, col_charts = st.columns([1.4, 1])
+
+    with col_actions:
+        st.markdown('<div class="cc"><div class="cc-title">All Actions</div><div class="cc-sub">Sorted by priority — P0 critical first</div>', unsafe_allow_html=True)
+        if len(filt):
+            for _,row in filt.sort_values(["priority","owner"]).iterrows():
+                oc2={"Engineering":"eng","Product":"prd","Design":"des"}.get(row["owner"],"eng")
+                pc2={"P0":"p0","P1":"p1","P2":"p2"}.get(row["priority"],"p1")
+                row_class={"P0":"arow arow-p0","P1":"arow arow-p1","P2":"arow arow-p2"}.get(row["priority"],"arow")
+                st.markdown(f'<div class="{row_class}"><span class="badge {pc2}">{row["priority"]}</span> <span class="badge {oc2}">{row["owner"]}</span> <span style="color:#e5e7eb;font-size:13px">{row["action"]}</span></div>', unsafe_allow_html=True)
+        else: st.caption("No actions match filters")
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    with col_charts:
+        st.markdown('<div class="cc"><div class="cc-title">By Owner</div><div class="cc-sub">Action count per team</div>', unsafe_allow_html=True)
+        if len(filt):
+            oc = filt["owner"].value_counts().reset_index()
+            oc.columns = ["owner","count"]
+            fig_oc = px.bar(oc, x="count", y="owner", orientation="h",
+                            color="owner",
+                            color_discrete_map={"Engineering":BLUE,"Product":PURPLE,"Design":PINK},
+                            height=180, text="count")
+            fig_oc.update_traces(textfont=dict(color="#fff",size=12), textposition="inside")
+            fig_oc.update_layout(
+                margin=dict(l=5,r=10,t=5,b=5),
+                plot_bgcolor=PLOT_BG, paper_bgcolor=PAPER_BG,
+                showlegend=False, font=FONT,
+                xaxis=dict(showgrid=True,gridcolor=GRID_COLOR,tickfont=dict(color=FONT_COLOR),title=""),
+                yaxis=dict(showgrid=False,tickfont=dict(color=FONT_COLOR),title="")
+            )
+            st.plotly_chart(fig_oc, use_container_width=True, config={"displayModeBar":False})
+        st.markdown('</div>', unsafe_allow_html=True)
+
+        st.markdown('<div class="cc"><div class="cc-title">By Priority</div><div class="cc-sub">P0 critical · P1 important · P2 backlog</div>', unsafe_allow_html=True)
+        if len(filt):
+            pc = filt["priority"].value_counts().reset_index()
+            pc.columns = ["priority","count"]
+            pc["order"] = pc["priority"].map({"P0":0,"P1":1,"P2":2})
+            pc = pc.sort_values("order")
+            fig_pc = px.bar(pc, x="priority", y="count",
+                            color="priority",
+                            color_discrete_map={"P0":RED,"P1":AMBER,"P2":CYAN},
+                            height=180, text="count")
+            fig_pc.update_traces(textfont=dict(color="#fff",size=13), textposition="inside")
+            fig_pc.update_layout(
+                margin=dict(l=5,r=10,t=5,b=10),
+                plot_bgcolor=PLOT_BG, paper_bgcolor=PAPER_BG,
+                showlegend=False, font=FONT,
+                xaxis=dict(showgrid=False,tickfont=dict(color=FONT_COLOR,size=12),title=""),
+                yaxis=dict(showgrid=False,visible=False)
+            )
+            st.plotly_chart(fig_pc, use_container_width=True, config={"displayModeBar":False})
+        st.markdown('</div>', unsafe_allow_html=True)
 
 
-# PAGE 4 FULL DATA
+# PAGE 4 — FULL DATA
 elif page == "Full Data":
     st.markdown('<div class="ph">Full Data</div>', unsafe_allow_html=True)
     st.markdown('<div class="psub">Complete results from 100 AI-processed review bundles across 20 apps. Filter by sentiment or app, explore raw AI summaries, and export structured data for further analysis.</div>', unsafe_allow_html=True)
@@ -400,7 +450,7 @@ elif page == "Full Data":
     with f1:
         sf = st.multiselect("Filter by Sentiment", ["positive","negative"],
                             default=["positive","negative"],
-                            help="Data only contains positive and negative no mixed sentiment in this dataset")
+                            help="Data only contains positive and negative — no mixed sentiment in this dataset")
     with f2:
         appf = st.multiselect("Filter by App", apps, default=[])
 
@@ -421,7 +471,7 @@ elif page == "Full Data":
 
     st.write("")
 
-    # Sentiment distribution horizontal bar, no label overlap
+    # Sentiment distribution — horizontal bar, no label overlap
     if len(rdf) > 0:
         st.markdown('<div class="cc"><div class="cc-title">Sentiment Distribution</div><div class="cc-sub">Positive vs negative per app in current filter</div>', unsafe_allow_html=True)
         app_filt = rdf.groupby(["app","sentiment"]).size().reset_index(name="count")
@@ -445,7 +495,7 @@ elif page == "Full Data":
     st.write("")
 
     # Results table
-    st.markdown('<div class="cc"><div class="cc-title">Results Table</div><div class="cc-sub">All processed review bundles AI-generated summaries</div>', unsafe_allow_html=True)
+    st.markdown('<div class="cc"><div class="cc-title">Results Table</div><div class="cc-sub">All processed review bundles — AI-generated summaries</div>', unsafe_allow_html=True)
     if len(rdf) > 0:
         disp = rdf[["app","sentiment","summary"]].copy()
         disp.columns = ["App","Sentiment","AI Summary"]

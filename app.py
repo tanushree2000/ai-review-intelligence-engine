@@ -421,29 +421,6 @@ elif page == "Full Data":
 
     st.write("")
 
-    # Sentiment breakdown chart for filtered data
-    if len(rdf) > 0:
-        st.markdown('<div class="cc"><div class="cc-title">Sentiment Distribution</div><div class="cc-sub">Positive vs negative in current filter</div>', unsafe_allow_html=True)
-        app_filt = rdf.groupby(["app","sentiment"]).size().reset_index(name="count")
-        fig_f = px.bar(app_filt, x="app", y="count", color="sentiment",
-                       color_discrete_map={"positive":CYAN,"negative":RED},
-                       barmode="group", height=280)
-        fig_f.update_layout(
-            margin=dict(l=40,r=10,t=10,b=200),
-            plot_bgcolor=PLOT_BG, paper_bgcolor=PAPER_BG, font=FONT,
-            legend=dict(orientation="h",y=-0.7,x=0,bgcolor="rgba(0,0,0,0)",
-                        font=dict(color=FONT_COLOR),title_text=""),
-            xaxis=dict(showgrid=False,tickangle=-90,title="",
-                       tickfont=dict(color=FONT_COLOR,size=10)),
-            yaxis=dict(showgrid=True,gridcolor=GRID_COLOR,
-                       tickfont=dict(color=FONT_COLOR))
-        )
-        fig_f.update_layout(bargap=0.2,height=350)
-        fig_f.update_layout(bargap=0.2)
-        st.plotly_chart(fig_f, use_container_width=True, config={"displayModeBar":False})
-        st.markdown('</div>', unsafe_allow_html=True)
-
-    st.write("")
 
     # Results table
     st.markdown('<div class="cc"><div class="cc-title">Results Table</div><div class="cc-sub">All processed review bundles — AI-generated summaries</div>', unsafe_allow_html=True)

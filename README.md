@@ -1,4 +1,4 @@
-# Review AI Intelligence Engine
+# AI Review Intelligence Engine
 
 An end-to-end AI system that fine-tunes FLAN-T5 with LoRA on 200,000 Google Play reviews across 20 apps, classifies user sentiment at scale, and delivers structured product intelligence through a live interactive dashboard.
 

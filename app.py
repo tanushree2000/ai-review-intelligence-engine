@@ -153,7 +153,7 @@ with st.sidebar:
     st.markdown('<br><p style="font-size:10px;color:#1e1e1e;text-align:center;margin-top:2rem">Tanushree Poojary · UIUC 2026</p>', unsafe_allow_html=True)
 
 
-# PAGE 1 — DAILY BRIEF
+# PAGE 1 DAILY BRIEF
 if page == "Daily Brief":
     st.markdown('<div class="ph">Review AI Intelligence System</div>', unsafe_allow_html=True)
     st.markdown('<div class="psub">AI-powered Voice of Customer analytics across 200,000 Google Play reviews. Surfacing user sentiment, critical pain points, and prioritized product actions to drive faster, evidence-based decisions.</div>', unsafe_allow_html=True)
@@ -232,7 +232,7 @@ if page == "Daily Brief":
         st.plotly_chart(fig2, use_container_width=True, config={"displayModeBar":False})
         st.markdown('</div>', unsafe_allow_html=True)
 
-    # Bottom row — 3 charts horizontal
+    # Bottom row 3 charts horizontal
     st.write("")
     b1, b2, b3 = st.columns(3)
 
@@ -305,7 +305,7 @@ if page == "Daily Brief":
         st.markdown('</div>', unsafe_allow_html=True)
 
 
-# PAGE 2 — APP DEEP DIVE
+# PAGE 2 APP DEEP DIVE
 elif page == "App Deep Dive":
     st.markdown('<div class="ph">App Deep Dive</div>', unsafe_allow_html=True)
     st.markdown('<div class="psub">Select any of the 20 apps to explore user pain points, product delighters, AI-generated summaries, and prioritized engineering and product actions.</div>', unsafe_allow_html=True)
@@ -355,7 +355,7 @@ elif page == "App Deep Dive":
         st.markdown('</div>', unsafe_allow_html=True)
 
 
-# PAGE 3 — ACTION BOARD
+# PAGE 3 ACTION BOARD
 elif page == "Action Board":
     st.markdown('<div class="ph">Action Board</div>', unsafe_allow_html=True)
     st.markdown('<div class="psub">35 AI-generated product actions ranked by severity. Filter by priority level and team ownership to build your sprint backlog and align engineering, product, and design teams.</div>', unsafe_allow_html=True)
@@ -388,7 +388,7 @@ elif page == "Action Board":
     st.markdown('</div>', unsafe_allow_html=True)
 
 
-# PAGE 4 — FULL DATA
+# PAGE 4 FULL DATA
 elif page == "Full Data":
     st.markdown('<div class="ph">Full Data</div>', unsafe_allow_html=True)
     st.markdown('<div class="psub">Complete results from 100 AI-processed review bundles across 20 apps. Filter by sentiment or app, explore raw AI summaries, and export structured data for further analysis.</div>', unsafe_allow_html=True)
@@ -400,7 +400,7 @@ elif page == "Full Data":
     with f1:
         sf = st.multiselect("Filter by Sentiment", ["positive","negative"],
                             default=["positive","negative"],
-                            help="Data only contains positive and negative — no mixed sentiment in this dataset")
+                            help="Data only contains positive and negative no mixed sentiment in this dataset")
     with f2:
         appf = st.multiselect("Filter by App", apps, default=[])
 
@@ -421,9 +421,31 @@ elif page == "Full Data":
 
     st.write("")
 
+    # Sentiment distribution horizontal bar, no label overlap
+    if len(rdf) > 0:
+        st.markdown('<div class="cc"><div class="cc-title">Sentiment Distribution</div><div class="cc-sub">Positive vs negative per app in current filter</div>', unsafe_allow_html=True)
+        app_filt = rdf.groupby(["app","sentiment"]).size().reset_index(name="count")
+        n_apps = rdf["app"].nunique()
+        chart_h = max(300, n_apps * 35)
+        fig_f = px.bar(app_filt, y="app", x="count", color="sentiment",
+                       color_discrete_map={"positive":CYAN,"negative":RED},
+                       barmode="group", height=chart_h, orientation="h")
+        fig_f.update_layout(
+            margin=dict(l=10,r=20,t=10,b=40),
+            plot_bgcolor=PLOT_BG, paper_bgcolor=PAPER_BG, font=FONT,
+            legend=dict(orientation="h",y=-0.1,x=0,bgcolor="rgba(0,0,0,0)",
+                        font=dict(color=FONT_COLOR),title_text=""),
+            xaxis=dict(showgrid=True,gridcolor=GRID_COLOR,
+                       tickfont=dict(color=FONT_COLOR),title=""),
+            yaxis=dict(showgrid=False,tickfont=dict(color=FONT_COLOR,size=11),title="")
+        )
+        st.plotly_chart(fig_f, use_container_width=True, config={"displayModeBar":False})
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    st.write("")
 
     # Results table
-    st.markdown('<div class="cc"><div class="cc-title">Results Table</div><div class="cc-sub">All processed review bundles — AI-generated summaries</div>', unsafe_allow_html=True)
+    st.markdown('<div class="cc"><div class="cc-title">Results Table</div><div class="cc-sub">All processed review bundles AI-generated summaries</div>', unsafe_allow_html=True)
     if len(rdf) > 0:
         disp = rdf[["app","sentiment","summary"]].copy()
         disp.columns = ["App","Sentiment","AI Summary"]

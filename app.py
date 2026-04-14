@@ -46,8 +46,8 @@ section[data-testid="stSidebar"] *{color:#6b7280!important;}
 .cc-sub{font-size:12px;color:#4b5563;margin-bottom:1rem;}
 
 /* Page header */
-.ph{font-size:36px;font-weight:800;color:#ffffff;letter-spacing:-1.5px;margin:0;line-height:1.1;}
-.psub{font-size:14px;color:#6b7280;margin-bottom:1.8rem;margin-top:6px;font-weight:400;letter-spacing:.01em;}
+.ph{font-size:42px;font-weight:800;color:#ffffff;letter-spacing:-2px;margin:0;line-height:1.1;}
+.psub{font-size:15px;color:#6b7280;margin-bottom:1.8rem;margin-top:8px;font-weight:400;letter-spacing:.02em;line-height:1.6;}
 
 /* Badges */
 .badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;margin:2px;}
@@ -145,7 +145,7 @@ with st.sidebar:
 # PAGE 1 — DAILY BRIEF
 if page == "Daily Brief":
     st.markdown('<div class="ph">VoC Intelligence</div>', unsafe_allow_html=True)
-    st.markdown('<div class="psub">Comprehensive insights into user sentiment, pain points, and product action priorities</div>', unsafe_allow_html=True)
+    st.markdown('<div class="psub">AI-powered Voice of Customer analytics across 200,000 Google Play reviews. Surfacing user sentiment, critical pain points, and prioritized product actions to drive faster, evidence-based decisions.</div>', unsafe_allow_html=True)
 
     c1,c2,c3,c4 = st.columns(4)
     with c1: st.markdown(kpi("Reviews Analyzed","200K","↑ 100 bundles processed","kpi-trend-pos","Google Play · 20 apps"), unsafe_allow_html=True)
@@ -280,7 +280,7 @@ if page == "Daily Brief":
 # PAGE 2 — APP DEEP DIVE
 elif page == "App Deep Dive":
     st.markdown('<div class="ph">App Deep Dive</div>', unsafe_allow_html=True)
-    st.markdown('<div class="psub">Select any app to explore pain points, delighters, and recommended actions</div>', unsafe_allow_html=True)
+    st.markdown('<div class="psub">Select any of the 20 apps to explore user pain points, product delighters, AI-generated summaries, and prioritized engineering and product actions.</div>', unsafe_allow_html=True)
 
     sel = st.selectbox("", apps, label_visibility="collapsed")
     adf = df[df["app"]==sel]
@@ -330,7 +330,7 @@ elif page == "App Deep Dive":
 # PAGE 3 — ACTION BOARD
 elif page == "Action Board":
     st.markdown('<div class="ph">Action Board</div>', unsafe_allow_html=True)
-    st.markdown('<div class="psub">All prioritized actions — use this for sprint planning and team assignment</div>', unsafe_allow_html=True)
+    st.markdown('<div class="psub">35 AI-generated product actions ranked by severity. Filter by priority level and team ownership to build your sprint backlog and align engineering, product, and design teams.</div>', unsafe_allow_html=True)
 
     st.write("")
     f1,f2 = st.columns(2)
@@ -363,7 +363,7 @@ elif page == "Action Board":
 # PAGE 4 — FULL DATA
 elif page == "Full Data":
     st.markdown('<div class="ph">Full Data</div>', unsafe_allow_html=True)
-    st.markdown('<div class="psub">Complete results — filter, explore, and export</div>', unsafe_allow_html=True)
+    st.markdown('<div class="psub">Complete results from 100 AI-processed review bundles across 20 apps. Filter by sentiment or app, explore raw AI summaries, and export structured data for further analysis.</div>', unsafe_allow_html=True)
 
     st.write("")
     f1,f2=st.columns(2)

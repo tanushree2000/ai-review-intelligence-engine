@@ -5,7 +5,7 @@ import os
 import plotly.express as px
 import plotly.graph_objects as go
 
-st.set_page_config(page_title="VoC Intelligence", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(page_title="VoC Intelligence", layout="wide", initial_sidebar_state="expanded", page_icon=" ")
 
 st.markdown("""
 <style>
@@ -31,6 +31,9 @@ section[data-testid="stSidebar"] .stRadio label{padding:6px 10px!important;borde
 [data-testid="collapsedControl"]{display:none!important;}
 .st-emotion-cache-1cypcdb{display:none!important;}
 div[data-testid="stSidebarNav"]{display:none!important;}
+div[data-testid="stSidebarNavSeparator"]{display:none!important;}
+section[data-testid="stSidebar"] div:first-child > div:first-child{padding-top:0!important;}
+.st-emotion-cache-16txtl3{padding-top:0!important;}
 
 .brand{font-size:14px;font-weight:700;color:#fff!important;letter-spacing:.2px;padding-bottom:12px;border-bottom:1px solid #1e1e1e;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
 .brand-dot{display:inline-block;width:7px;height:7px;background:#00d4aa;border-radius:50%;flex-shrink:0;}

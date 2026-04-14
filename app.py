@@ -32,13 +32,13 @@ section[data-testid="stSidebar"] *{color:#6b7280!important;}
 .sstat-v{font-size:13px;font-weight:600;color:#9ca3af!important;margin-top:2px;}
 
 /* KPI Cards */
-.kpi{background:#161616;border:1px solid #1e1e1e;border-radius:10px;padding:1.4rem 1.5rem;}
-.kpi-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:#4b5563;margin-bottom:12px;}
-.kpi-trend-pos{font-size:12px;font-weight:600;color:#00d4aa;margin-bottom:6px;}
-.kpi-trend-neg{font-size:12px;font-weight:600;color:#ef4444;margin-bottom:6px;}
-.kpi-trend-neu{font-size:12px;font-weight:600;color:#6b7280;margin-bottom:6px;}
-.kpi-value{font-size:38px;font-weight:800;color:#ffffff;line-height:1;letter-spacing:-1.5px;margin-bottom:8px;}
-.kpi-sub{font-size:12px;color:#4b5563;}
+.kpi{background:#161616;border:1px solid #1e1e1e;border-radius:12px;padding:1.5rem 1.6rem;}
+.kpi-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#4b5563;margin-bottom:10px;}
+.kpi-trend-pos{font-size:12px;font-weight:700;color:#00d4aa;margin-bottom:8px;letter-spacing:.01em;}
+.kpi-trend-neg{font-size:12px;font-weight:700;color:#ef4444;margin-bottom:8px;letter-spacing:.01em;}
+.kpi-trend-neu{font-size:12px;font-weight:600;color:#6b7280;margin-bottom:8px;}
+.kpi-value{font-size:44px;font-weight:800;color:#ffffff;line-height:1;letter-spacing:-2px;margin-bottom:10px;}
+.kpi-sub{font-size:12px;color:#374151;font-weight:400;border-top:1px solid #1e1e1e;padding-top:10px;margin-top:2px;}
 
 /* Chart cards */
 .cc{background:#161616;border:1px solid #1e1e1e;border-radius:10px;padding:1.3rem 1.5rem;margin-top:.8rem;}
@@ -46,8 +46,8 @@ section[data-testid="stSidebar"] *{color:#6b7280!important;}
 .cc-sub{font-size:12px;color:#4b5563;margin-bottom:1rem;}
 
 /* Page header */
-.ph{font-size:28px;font-weight:800;color:#ffffff;letter-spacing:-1px;margin:0;}
-.psub{font-size:13px;color:#4b5563;margin-bottom:1.8rem;margin-top:4px;}
+.ph{font-size:36px;font-weight:800;color:#ffffff;letter-spacing:-1.5px;margin:0;line-height:1.1;}
+.psub{font-size:14px;color:#6b7280;margin-bottom:1.8rem;margin-top:6px;font-weight:400;letter-spacing:.01em;}
 
 /* Badges */
 .badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;margin:2px;}
@@ -156,7 +156,7 @@ if page == "Daily Brief":
     st.write("")
     st.markdown('''<div class="insight">
         <div class="insight-lbl">AI Insight</div>
-        Sentiment is evenly split — 50% positive, 50% negative. Engineering owns 54% of all recommended actions,
+        Sentiment is evenly split: 50% positive, 50% negative. Engineering owns 54% of all recommended actions,
         suggesting product quality and stability issues drive dissatisfaction more than design gaps.
         3 P0 critical issues require immediate resolution before the next product release.
     </div>''', unsafe_allow_html=True)

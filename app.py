@@ -28,11 +28,9 @@ section[data-testid="stSidebar"] label{font-size:12px!important;font-weight:500!
 section[data-testid="stSidebar"] .stRadio>div{gap:2px!important;}
 section[data-testid="stSidebar"] .stRadio label{padding:5px 8px!important;border-radius:6px!important;}
 [data-testid="stSidebarNavItems"]{display:none!important;}
-[data-testid="collapsedControl"]{display:none!important;}
 div[data-testid="stSidebarNav"]{display:none!important;}
 div[data-testid="stSidebarNavSeparator"]{display:none!important;}
 [data-testid="stSidebarNavLink"]{display:none!important;}
-header[data-testid="stHeader"]{display:none!important;}
 
 .brand{font-size:14px;font-weight:700;color:#fff!important;letter-spacing:.2px;padding-bottom:12px;border-bottom:1px solid #1e1e1e;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
 .brand-dot{display:inline-block;width:7px;height:7px;background:#00d4aa;border-radius:50%;flex-shrink:0;}

@@ -429,11 +429,11 @@ elif page == "Full Data":
                        color_discrete_map={"positive":CYAN,"negative":RED},
                        barmode="group", height=280)
         fig_f.update_layout(
-            margin=dict(l=40,r=10,t=10,b=100),
+            margin=dict(l=40,r=10,t=10,b=150),
             plot_bgcolor=PLOT_BG, paper_bgcolor=PAPER_BG, font=FONT,
-            legend=dict(orientation="h",y=-0.4,x=0,bgcolor="rgba(0,0,0,0)",
+            legend=dict(orientation="h",y=-0.55,x=0,bgcolor="rgba(0,0,0,0)",
                         font=dict(color=FONT_COLOR),title_text=""),
-            xaxis=dict(showgrid=False,tickangle=-40,title="",
+            xaxis=dict(showgrid=False,tickangle=-55,title="",
                        tickfont=dict(color=FONT_COLOR,size=10)),
             yaxis=dict(showgrid=True,gridcolor=GRID_COLOR,
                        tickfont=dict(color=FONT_COLOR))

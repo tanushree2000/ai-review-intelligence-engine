@@ -4,7 +4,7 @@ This project is an AI-powered system that analyzes real-world Google Play app re
 
 # Architecture
 
-![Architecture](architecture.png)
+![Architecture](assets/architecture.png)
 
 ## 🔹 Features
 - Sentiment Analysis (Positive / Negative / Mixed)

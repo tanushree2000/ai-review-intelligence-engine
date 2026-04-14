@@ -5,7 +5,7 @@ import os
 import plotly.express as px
 import plotly.graph_objects as go
 
-st.set_page_config(page_title="Review AI Intelligence System", layout="wide", initial_sidebar_state="expanded", page_icon="")
+st.set_page_config(page_title="Review AI Intelligence System", layout="wide", initial_sidebar_state="expanded", page_icon="🧠")
 
 st.markdown("""
 <style>
@@ -286,6 +286,8 @@ if page == "Daily Brief":
         if len(af):
             pc = af["priority"].value_counts().reset_index()
             pc.columns = ["priority","count"]
+            pc["order"] = pc["priority"].map({"P0":0,"P1":1,"P2":2})
+            pc = pc.sort_values("order")
             fig5 = px.bar(pc, x="priority", y="count",
                           color="priority",
                           color_discrete_map={"P0":RED,"P1":AMBER,"P2":CYAN},

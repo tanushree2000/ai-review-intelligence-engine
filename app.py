@@ -182,7 +182,7 @@ if page == "Daily Brief":
         app_sent = df.groupby(["app","sentiment"]).size().reset_index(name="count")
         fig = px.bar(app_sent, x="app", y="count", color="sentiment",
                      color_discrete_map={"positive":CYAN,"negative":RED},
-                     barmode="group", height=340)
+                     barmode="group", height=420)
         fig.update_layout(
             margin=dict(l=40,r=10,t=10,b=140),
             plot_bgcolor=PLOT_BG, paper_bgcolor=PAPER_BG,
@@ -218,13 +218,13 @@ if page == "Daily Brief":
             fill="tozeroy", fillcolor="rgba(239,68,68,0.08)"
         ))
         fig2.update_layout(
-            height=300, margin=dict(l=40,r=10,t=10,b=60),
+            height=420, margin=dict(l=40,r=10,t=10,b=70),
             plot_bgcolor=PLOT_BG, paper_bgcolor=PAPER_BG, font=FONT,
-            legend=dict(orientation="h",y=-0.25,x=0,bgcolor="rgba(0,0,0,0)",
+            legend=dict(orientation="h",y=-0.18,x=0,bgcolor="rgba(0,0,0,0)",
                         font=dict(color=FONT_COLOR)),
             xaxis=dict(showgrid=False,linecolor=GRID_COLOR,
                        tickfont=dict(color=FONT_COLOR),
-                       title=dict(text="Bundle ID",font=dict(color=FONT_COLOR,size=11))),
+                       title=dict(text="Bundle ID",font=dict(color=FONT_COLOR,size=11),standoff=15)),
             yaxis=dict(showgrid=True,gridcolor=GRID_COLOR,
                        tickfont=dict(color=FONT_COLOR),
                        title=dict(text="Count",font=dict(color=FONT_COLOR,size=11)))

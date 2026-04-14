@@ -13,11 +13,13 @@ st.markdown("""
 *{font-family:'Inter',sans-serif!important;box-sizing:border-box;}
 
 .main{background:#0d0d0d;}
-.main .block-container{background:#0d0d0d;padding:2rem 2.5rem;max-width:100%;}
+.main .block-container{background:#0d0d0d;padding:0.5rem 2rem 2rem;max-width:100%;}
 .stApp{background:#0d0d0d!important;}
 [data-testid="stAppViewContainer"]{background:#0d0d0d!important;}
-[data-testid="stHeader"]{background:#0d0d0d!important;}
-[data-testid="stToolbar"]{background:#0d0d0d!important;}
+[data-testid="stHeader"]{background:#0d0d0d!important;display:none;}
+[data-testid="stToolbar"]{display:none!important;}
+[data-testid="stDecoration"]{display:none!important;}
+.block-container{padding-top:1rem!important;}
 
 section[data-testid="stSidebar"]{background:#111111!important;border-right:1px solid #1e1e1e!important;min-width:220px!important;max-width:220px!important;}
 section[data-testid="stSidebar"]>div{padding:1.8rem 1.2rem;}
@@ -169,18 +171,20 @@ if page == "Daily Brief":
         app_sent = df.groupby(["app","sentiment"]).size().reset_index(name="count")
         fig = px.bar(app_sent, x="app", y="count", color="sentiment",
                      color_discrete_map={"positive":CYAN,"negative":RED},
-                     barmode="group", height=270)
+                     barmode="group", height=300)
         fig.update_layout(
-            margin=dict(l=0,r=0,t=0,b=70),
+            margin=dict(l=40,r=10,t=10,b=120),
             plot_bgcolor=PLOT_BG, paper_bgcolor=PAPER_BG,
             font=FONT,
-            legend=dict(orientation="h",y=-0.35,x=0,bgcolor="rgba(0,0,0,0)",
-                        font=dict(color=FONT_COLOR)),
-            xaxis=dict(showgrid=False,tickangle=-40,title="",
-                       tickfont=dict(color=FONT_COLOR),linecolor=GRID_COLOR),
-            yaxis=dict(showgrid=True,gridcolor=GRID_COLOR,title="",
-                       tickfont=dict(color=FONT_COLOR)),
-            bargap=0.25, bargroupgap=0.1
+            legend=dict(orientation="h",y=-0.45,x=0,bgcolor="rgba(0,0,0,0)",
+                        font=dict(color=FONT_COLOR),title_text=""),
+            xaxis=dict(showgrid=False,tickangle=-45,title="",
+                       tickfont=dict(color=FONT_COLOR,size=10),
+                       linecolor=GRID_COLOR),
+            yaxis=dict(showgrid=True,gridcolor=GRID_COLOR,title="Count",
+                       tickfont=dict(color=FONT_COLOR),
+                       titlefont=dict(color=FONT_COLOR,size=11)),
+            bargap=0.2, bargroupgap=0.05
         )
         st.plotly_chart(fig, use_container_width=True, config={"displayModeBar":False})
         st.markdown('</div>', unsafe_allow_html=True)
@@ -201,14 +205,17 @@ if page == "Daily Brief":
             fill="tozeroy", fillcolor="rgba(239,68,68,0.08)"
         ))
         fig2.update_layout(
-            height=200, margin=dict(l=0,r=0,t=0,b=30),
+            height=260, margin=dict(l=40,r=10,t=10,b=60),
             plot_bgcolor=PLOT_BG, paper_bgcolor=PAPER_BG, font=FONT,
-            legend=dict(orientation="h",y=-0.4,bgcolor="rgba(0,0,0,0)",
+            legend=dict(orientation="h",y=-0.3,x=0,bgcolor="rgba(0,0,0,0)",
                         font=dict(color=FONT_COLOR)),
             xaxis=dict(showgrid=False,title="Bundle ID",
-                       tickfont=dict(color=FONT_COLOR),linecolor=GRID_COLOR),
-            yaxis=dict(showgrid=True,gridcolor=GRID_COLOR,
-                       tickfont=dict(color=FONT_COLOR))
+                       tickfont=dict(color=FONT_COLOR),
+                       titlefont=dict(color=FONT_COLOR,size=11),
+                       linecolor=GRID_COLOR),
+            yaxis=dict(showgrid=True,gridcolor=GRID_COLOR,title="Count",
+                       tickfont=dict(color=FONT_COLOR),
+                       titlefont=dict(color=FONT_COLOR,size=11))
         )
         st.plotly_chart(fig2, use_container_width=True, config={"displayModeBar":False})
         st.markdown('</div>', unsafe_allow_html=True)
@@ -218,19 +225,19 @@ if page == "Daily Brief":
         fig3 = go.Figure(go.Pie(
             labels=["Positive","Negative"], values=[pos,neg],
             marker=dict(colors=[CYAN,RED], line=dict(color=PLOT_BG,width=3)),
-            hole=0.65, textinfo="percent",
-            textfont=dict(family="Inter",size=13,color="#fff"),
+            hole=0.6, textinfo="percent",
+            textfont=dict(family="Inter",size=12,color="#fff"),
             hovertemplate="%{label}: %{value}<extra></extra>"
         ))
         fig3.add_annotation(
-            text=f"<b>{round(pos/total*100)}%</b><br><span style='color:#4b5563'>positive</span>",
+            text=f"<b>{round(pos/total*100)}%</b><br>positive",
             x=0.5, y=0.5, showarrow=False,
-            font=dict(family="Inter",size=15,color="#fff")
+            font=dict(family="Inter",size=14,color="#fff")
         )
         fig3.update_layout(
-            height=230, margin=dict(l=0,r=0,t=10,b=10),
+            height=260, margin=dict(l=10,r=10,t=10,b=40),
             paper_bgcolor=PAPER_BG, showlegend=True,
-            legend=dict(orientation="h",x=0,y=-0.1,
+            legend=dict(orientation="h",x=0.1,y=-0.08,
                         font=dict(color=FONT_COLOR,size=11)),
             font=dict(family="Inter")
         )
@@ -244,33 +251,34 @@ if page == "Daily Brief":
             fig4 = px.bar(oc, x="count", y="owner", orientation="h",
                           color="owner",
                           color_discrete_map={"Engineering":BLUE,"Product":PURPLE,"Design":PINK},
-                          height=150, text="count")
+                          height=160, text="count")
             fig4.update_traces(textfont=dict(color="#fff",size=12), textposition="inside")
             fig4.update_layout(
-                margin=dict(l=0,r=0,t=0,b=0),
+                margin=dict(l=10,r=10,t=5,b=5),
                 plot_bgcolor=PLOT_BG, paper_bgcolor=PAPER_BG,
                 showlegend=False, font=FONT,
-                xaxis=dict(showgrid=True,gridcolor=GRID_COLOR,tickfont=dict(color=FONT_COLOR)),
-                yaxis=dict(showgrid=False,tickfont=dict(color=FONT_COLOR))
+                xaxis=dict(showgrid=True,gridcolor=GRID_COLOR,
+                           tickfont=dict(color=FONT_COLOR),title=""),
+                yaxis=dict(showgrid=False,tickfont=dict(color=FONT_COLOR),title="")
             )
             st.plotly_chart(fig4, use_container_width=True, config={"displayModeBar":False})
         st.markdown('</div>', unsafe_allow_html=True)
 
-        st.markdown('<div class="cc"><div class="cc-title">Priority Breakdown</div><div class="cc-sub">P0 · P1 · P2 distribution</div>', unsafe_allow_html=True)
+        st.markdown('<div class="cc"><div class="cc-title">Priority Breakdown</div><div class="cc-sub">P0 critical · P1 important · P2 backlog</div>', unsafe_allow_html=True)
         if len(af):
             pc = af["priority"].value_counts().reset_index()
             pc.columns = ["priority","count"]
             fig5 = px.bar(pc, x="priority", y="count",
                           color="priority",
                           color_discrete_map={"P0":RED,"P1":AMBER,"P2":CYAN},
-                          height=150, text="count")
+                          height=160, text="count")
             fig5.update_traces(textfont=dict(color="#fff",size=13,family="Inter"),
                                textposition="inside")
             fig5.update_layout(
-                margin=dict(l=0,r=0,t=0,b=0),
+                margin=dict(l=10,r=10,t=5,b=30),
                 plot_bgcolor=PLOT_BG, paper_bgcolor=PAPER_BG,
                 showlegend=False, font=FONT,
-                xaxis=dict(showgrid=False,tickfont=dict(color=FONT_COLOR)),
+                xaxis=dict(showgrid=False,tickfont=dict(color=FONT_COLOR,size=12),title=""),
                 yaxis=dict(showgrid=False,visible=False)
             )
             st.plotly_chart(fig5, use_container_width=True, config={"displayModeBar":False})

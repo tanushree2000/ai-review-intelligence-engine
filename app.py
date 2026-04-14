@@ -392,27 +392,67 @@ elif page == "Action Board":
 elif page == "Full Data":
     st.markdown('<div class="ph">Full Data</div>', unsafe_allow_html=True)
     st.markdown('<div class="psub">Complete results from 100 AI-processed review bundles across 20 apps. Filter by sentiment or app, explore raw AI summaries, and export structured data for further analysis.</div>', unsafe_allow_html=True)
+    st.write("")
+    st.write("")
+
+    # Filters
+    f1, f2 = st.columns(2)
+    with f1:
+        sf = st.multiselect("Filter by Sentiment", ["positive","negative"],
+                            default=["positive","negative"],
+                            help="Data only contains positive and negative — no mixed sentiment in this dataset")
+    with f2:
+        appf = st.multiselect("Filter by App", apps, default=[])
+
+    rdf = df.copy()
+    if sf: rdf = rdf[rdf["sentiment"].isin(sf)]
+    if appf: rdf = rdf[rdf["app"].isin(appf)]
 
     st.write("")
-    f1,f2=st.columns(2)
-    with f1: sf=st.multiselect("Sentiment",["positive","negative"],default=["positive","negative"])
-    with f2: appf=st.multiselect("App",apps,default=[])
 
-    rdf=df.copy()
-    if sf: rdf=rdf[rdf["sentiment"].isin(sf)]
-    if appf: rdf=rdf[rdf["app"].isin(appf)]
-
-    st.write("")
-    c1,c2,c3=st.columns(3)
-    with c1: st.markdown(kpi("Showing",str(len(rdf)),"","kpi-trend-neu","of 100 bundles"), unsafe_allow_html=True)
-    with c2: st.markdown(kpi("Positive",str((rdf["sentiment"]=="positive").sum()),"","kpi-trend-pos","in selection"), unsafe_allow_html=True)
-    with c3: st.markdown(kpi("Negative",str((rdf["sentiment"]=="negative").sum()),"","kpi-trend-neg","in selection"), unsafe_allow_html=True)
+    # Metrics
+    c1,c2,c3,c4 = st.columns(4)
+    pos_sel = int((rdf["sentiment"]=="positive").sum())
+    neg_sel = int((rdf["sentiment"]=="negative").sum())
+    with c1: st.markdown(kpi("Total Bundles",str(len(rdf)),"","kpi-trend-neu","in current filter"), unsafe_allow_html=True)
+    with c2: st.markdown(kpi("Positive",str(pos_sel),f"↑ {round(pos_sel/len(rdf)*100) if len(rdf) else 0}% of selection","kpi-trend-pos",""), unsafe_allow_html=True)
+    with c3: st.markdown(kpi("Negative",str(neg_sel),f"↓ {round(neg_sel/len(rdf)*100) if len(rdf) else 0}% of selection","kpi-trend-neg",""), unsafe_allow_html=True)
+    with c4: st.markdown(kpi("Apps Shown",str(rdf["app"].nunique()),"","kpi-trend-neu","unique apps"), unsafe_allow_html=True)
 
     st.write("")
-    st.markdown('<div class="cc"><div class="cc-title">Results</div><div class="cc-sub">All processed review bundles</div>', unsafe_allow_html=True)
-    disp=rdf[["app","sentiment","summary"]].copy()
-    disp.columns=["App","Sentiment","AI Summary"]
-    st.dataframe(disp,use_container_width=True,height=460,hide_index=True)
+
+    # Sentiment breakdown chart for filtered data
+    if len(rdf) > 0:
+        st.markdown('<div class="cc"><div class="cc-title">Sentiment Distribution</div><div class="cc-sub">Positive vs negative in current filter</div>', unsafe_allow_html=True)
+        app_filt = rdf.groupby(["app","sentiment"]).size().reset_index(name="count")
+        fig_f = px.bar(app_filt, x="app", y="count", color="sentiment",
+                       color_discrete_map={"positive":CYAN,"negative":RED},
+                       barmode="group", height=280)
+        fig_f.update_layout(
+            margin=dict(l=40,r=10,t=10,b=100),
+            plot_bgcolor=PLOT_BG, paper_bgcolor=PAPER_BG, font=FONT,
+            legend=dict(orientation="h",y=-0.4,x=0,bgcolor="rgba(0,0,0,0)",
+                        font=dict(color=FONT_COLOR),title_text=""),
+            xaxis=dict(showgrid=False,tickangle=-40,title="",
+                       tickfont=dict(color=FONT_COLOR,size=10)),
+            yaxis=dict(showgrid=True,gridcolor=GRID_COLOR,
+                       tickfont=dict(color=FONT_COLOR))
+        )
+        fig_f.update_layout(bargap=0.2)
+        st.plotly_chart(fig_f, use_container_width=True, config={"displayModeBar":False})
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    st.write("")
+
+    # Results table
+    st.markdown('<div class="cc"><div class="cc-title">Results Table</div><div class="cc-sub">All processed review bundles — AI-generated summaries</div>', unsafe_allow_html=True)
+    if len(rdf) > 0:
+        disp = rdf[["app","sentiment","summary"]].copy()
+        disp.columns = ["App","Sentiment","AI Summary"]
+        st.dataframe(disp, use_container_width=True, height=400, hide_index=True)
+    else:
+        st.caption("No results match your filter.")
     st.markdown('</div>', unsafe_allow_html=True)
+
     st.write("")
-    st.download_button("Download CSV",df.to_csv(index=False),"voc_results.csv","text/csv")
+    st.download_button("Download CSV", df.to_csv(index=False), "voc_results.csv", "text/csv")

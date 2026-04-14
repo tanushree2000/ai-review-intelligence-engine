@@ -5,7 +5,7 @@ import os
 import plotly.express as px
 import plotly.graph_objects as go
 
-st.set_page_config(page_title="Review AI Intelligence System", layout="wide", initial_sidebar_state="expanded", page_icon="🧠")
+st.set_page_config(page_title="Review AI Intelligence System", layout="wide", initial_sidebar_state="expanded", page_icon="")
 
 st.markdown("""
 <style>
@@ -32,13 +32,21 @@ div[data-testid="stSidebarNav"]{display:none!important;}
 div[data-testid="stSidebarNavSeparator"]{display:none!important;}
 [data-testid="stSidebarNavLink"]{display:none!important;}
 
-.brand{font-size:14px;font-weight:700;color:#fff!important;letter-spacing:.2px;padding-bottom:12px;border-bottom:1px solid #1e1e1e;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.brand{font-size:12px;font-weight:700;color:#fff!important;letter-spacing:.8px;text-transform:uppercase;padding-bottom:12px;border-bottom:1px solid #1e1e1e;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
 .brand-dot{display:inline-block;width:7px;height:7px;background:#00d4aa;border-radius:50%;flex-shrink:0;}
 
-.snav-sec{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:#2a2a2a!important;margin:14px 0 4px 2px;}
-.sstat{padding:5px 2px;border-bottom:1px solid #191919;}
-.sstat-l{font-size:10px;color:#333!important;text-transform:uppercase;letter-spacing:.05em;}
-.sstat-v{font-size:12px;font-weight:600;color:#9ca3af!important;margin-top:1px;}
+.snav-sec{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:#2a2a2a!important;margin:14px 0 6px 2px;}
+
+.sstat{padding:8px 10px;margin-bottom:4px;background:#161616;border-radius:6px;border:1px solid #1e1e1e;}
+.sstat-l{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#3a3a3a!important;font-weight:600;}
+.sstat-v{font-size:13px;font-weight:600;color:#9ca3af!important;margin-top:2px;}
+
+.sstat-green{padding:8px 10px;margin-bottom:4px;background:#081510;border-radius:6px;border-left:2px solid #00d4aa;}
+.sstat-red{padding:8px 10px;margin-bottom:4px;background:#150808;border-radius:6px;border-left:2px solid #ef4444;}
+.sstat-blue{padding:8px 10px;margin-bottom:4px;background:#080f18;border-radius:6px;border-left:2px solid #60a5fa;}
+.sstat-amber{padding:8px 10px;margin-bottom:4px;background:#151008;border-radius:6px;border-left:2px solid #f59e0b;}
+.sstat-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#374151!important;font-weight:600;}
+.sstat-val{font-size:14px;font-weight:700;color:#fff!important;margin-top:2px;}
 
 /* KPI Cards */
 .kpi{background:#161616;border:1px solid #1e1e1e;border-radius:10px;padding:.9rem 1.1rem;}
@@ -141,33 +149,37 @@ def kpi(label, value, trend, trend_class, sub):
 # SIDEBAR
 with st.sidebar:
     st.markdown('<div class="brand"><span class="brand-dot"></span>Review AI Intelligence</div>', unsafe_allow_html=True)
-    page = st.radio("", ["Daily Brief","App Deep Dive","Action Board","Full Data"], label_visibility="collapsed")
-    st.markdown('<hr style="border:none;border-top:1px solid #1e1e1e;margin:12px 0;">', unsafe_allow_html=True)
+    page = st.radio("", ["Overview","App Analysis","Recommendations","Data Explorer"], label_visibility="collapsed")
+    st.markdown('<hr style="border:none;border-top:1px solid #1e1e1e;margin:10px 0;">', unsafe_allow_html=True)
 
     st.markdown('<div class="snav-sec">Dataset</div>', unsafe_allow_html=True)
-    for l,v in [("Reviews","200,000"),("Apps","20"),("Bundles",str(total)),("Actions flagged",str(ta))]:
-        st.markdown(f'<div class="sstat"><div class="sstat-l">{l}</div><div class="sstat-v">{v}</div></div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="sstat-green"><div class="sstat-lbl">Reviews Analyzed</div><div class="sstat-val">200,000</div></div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="sstat-blue"><div class="sstat-lbl">Apps Covered</div><div class="sstat-val">20</div></div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="sstat-amber"><div class="sstat-lbl">Bundles Processed</div><div class="sstat-val">{total}</div></div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="sstat-red"><div class="sstat-lbl">Actions Flagged</div><div class="sstat-val">{ta}</div></div>', unsafe_allow_html=True)
 
-    st.markdown('<hr style="border:none;border-top:1px solid #1e1e1e;margin:12px 0;">', unsafe_allow_html=True)
+    st.markdown('<hr style="border:none;border-top:1px solid #1e1e1e;margin:10px 0;">', unsafe_allow_html=True)
     st.markdown('<div class="snav-sec">Model</div>', unsafe_allow_html=True)
-    for l,v in [("Architecture","FLAN-T5 + LoRA"),("Checkpoint","3,449 steps"),("Hardware","Tesla T4 GPU"),("Accuracy","85.74%")]:
-        st.markdown(f'<div class="sstat"><div class="sstat-l">{l}</div><div class="sstat-v">{v}</div></div>', unsafe_allow_html=True)
+    st.markdown('<div class="sstat"><div class="sstat-l">Architecture</div><div class="sstat-v">FLAN-T5 + LoRA</div></div>', unsafe_allow_html=True)
+    st.markdown('<div class="sstat"><div class="sstat-l">Checkpoint</div><div class="sstat-v">3,449 steps</div></div>', unsafe_allow_html=True)
+    st.markdown('<div class="sstat"><div class="sstat-l">Hardware</div><div class="sstat-v">Tesla T4 GPU</div></div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="sstat-green"><div class="sstat-lbl">Accuracy</div><div class="sstat-val">85.74%</div></div>', unsafe_allow_html=True)
 
-    st.markdown('<br><p style="font-size:10px;color:#1e1e1e;text-align:center;margin-top:2rem">Tanushree Poojary · UIUC 2026</p>', unsafe_allow_html=True)
+    st.markdown('<br><p style="font-size:10px;color:#2a2a2a;text-align:center;padding-top:.5rem;border-top:1px solid #1a1a1a">Tanushree Poojary · UIUC 2026</p>', unsafe_allow_html=True)
 
 
-# PAGE 1 — DAILY BRIEF
-if page == "Daily Brief":
+# PAGE 1: OVERVIEW
+if page == "Overview":
     st.markdown('<div class="ph">Review AI Intelligence System</div>', unsafe_allow_html=True)
     st.markdown('<div class="psub">AI-powered Voice of Customer analytics across 200,000 Google Play reviews. Surfacing user sentiment, critical pain points, and prioritized product actions to drive faster, evidence-based decisions.</div>', unsafe_allow_html=True)
     st.write("")
     st.write("")
 
     c1,c2,c3,c4 = st.columns(4)
-    with c1: st.markdown(kpi("Reviews Analyzed","200K","↑ 100 bundles processed","kpi-trend-pos","Google Play · 20 apps"), unsafe_allow_html=True)
-    with c2: st.markdown(kpi("Positive Sentiment",str(pos),f"↑ +{round(pos/total*100)}% of all bundles","kpi-trend-pos","Users satisfied"), unsafe_allow_html=True)
-    with c3: st.markdown(kpi("Negative Sentiment",str(neg),f"↓ -{round(neg/total*100)}% needs attention","kpi-trend-neg","Users dissatisfied"), unsafe_allow_html=True)
-    with c4: st.markdown(kpi("Critical P0 Issues",str(p0c),"↓ -2.1% Fix immediately","kpi-trend-neg","Before next release"), unsafe_allow_html=True)
+    with c1: st.markdown(kpi("Reviews Analyzed","200K","up 100 bundles processed","kpi-trend-pos","Google Play · 20 apps"), unsafe_allow_html=True)
+    with c2: st.markdown(kpi("Positive Sentiment",str(pos),f"up +{round(pos/total*100)}% of all bundles","kpi-trend-pos","Users satisfied"), unsafe_allow_html=True)
+    with c3: st.markdown(kpi("Negative Sentiment",str(neg),f"down -{round(neg/total*100)}% needs attention","kpi-trend-neg","Users dissatisfied"), unsafe_allow_html=True)
+    with c4: st.markdown(kpi("Critical P0 Issues",str(p0c),"down -2.1% Fix immediately","kpi-trend-neg","Before next release"), unsafe_allow_html=True)
 
     st.write("")
     st.markdown('''<div class="insight">
@@ -235,7 +247,7 @@ if page == "Daily Brief":
         st.plotly_chart(fig2, use_container_width=True, config={"displayModeBar":False})
         st.markdown('</div>', unsafe_allow_html=True)
 
-    # Bottom row — 3 charts horizontal
+    # Bottom row: 3 charts horizontal
     st.write("")
     b1, b2, b3 = st.columns(3)
 
@@ -308,9 +320,9 @@ if page == "Daily Brief":
         st.markdown('</div>', unsafe_allow_html=True)
 
 
-# PAGE 2 — APP DEEP DIVE
-elif page == "App Deep Dive":
-    st.markdown('<div class="ph">App Deep Dive</div>', unsafe_allow_html=True)
+# PAGE 2: APP DEEP DIVE
+elif page == "App Analysis":
+    st.markdown('<div class="ph">App Analysis</div>', unsafe_allow_html=True)
     st.markdown('<div class="psub">Select any of the 20 apps to explore user pain points, product delighters, AI-generated summaries, and prioritized engineering and product actions.</div>', unsafe_allow_html=True)
 
     sel = st.selectbox("", apps, label_visibility="collapsed")
@@ -327,7 +339,7 @@ elif page == "App Deep Dive":
         tc = "kpi-trend-pos" if pp>=50 else "kpi-trend-neg"
         ti = "↑" if pp>=50 else "↓"
         st.markdown(kpi("Positive Sentiment",f"{pp}%",f"{ti} {'Good signal' if pp>=50 else 'Needs attention'}",tc,""), unsafe_allow_html=True)
-    with c3: st.markdown(kpi("P0 Critical",str(p0a),"↓ Fix immediately","kpi-trend-neg",""), unsafe_allow_html=True)
+    with c3: st.markdown(kpi("P0 Critical",str(p0a),"down Fix immediately","kpi-trend-neg",""), unsafe_allow_html=True)
     with c4: st.markdown(kpi("P1 Sprint",str(p1a),"Address this sprint","kpi-trend-neu",""), unsafe_allow_html=True)
 
     st.write("")
@@ -358,10 +370,10 @@ elif page == "App Deep Dive":
         st.markdown('</div>', unsafe_allow_html=True)
 
 
-# PAGE 3 — ACTION BOARD
-elif page == "Action Board":
-    st.markdown('<div class="ph">Action Board</div>', unsafe_allow_html=True)
-    st.markdown('<div class="psub">Derived from AI analysis of 200,000 Google Play reviews. 35 product actions triaged by severity across Engineering, Product, and Design — structured for sprint intake and cross-functional execution.</div>', unsafe_allow_html=True)
+# PAGE 3: ACTION BOARD
+elif page == "Recommendations":
+    st.markdown('<div class="ph">Recommendations</div>', unsafe_allow_html=True)
+    st.markdown('<div class="psub">Derived from AI analysis of 200,000 Google Play reviews. 35 product actions triaged by severity across Engineering, Product, and Design: structured for sprint intake and cross-functional execution.</div>', unsafe_allow_html=True)
     st.write("")
     st.write("")
 
@@ -379,11 +391,11 @@ elif page == "Action Board":
     p0f=int((filt["priority"]=="P0").sum()) if len(filt) else 0
     engf=int((filt["owner"]=="Engineering").sum()) if len(filt) else 0
     with c1: st.markdown(kpi("Total Actions",str(len(filt)),"","kpi-trend-neu","in current filter"), unsafe_allow_html=True)
-    with c2: st.markdown(kpi("P0 Critical",str(p0f),"↓ Fix before shipping","kpi-trend-neg",""), unsafe_allow_html=True)
-    with c3: st.markdown(kpi("Engineering",str(engf),"↑ items assigned","kpi-trend-pos",""), unsafe_allow_html=True)
+    with c2: st.markdown(kpi("P0 Critical",str(p0f),"down Fix before shipping","kpi-trend-neg",""), unsafe_allow_html=True)
+    with c3: st.markdown(kpi("Engineering",str(engf),"up items assigned","kpi-trend-pos",""), unsafe_allow_html=True)
 
     st.write("")
-    st.markdown('<div class="cc"><div class="cc-title">All Actions</div><div class="cc-sub">Sorted by priority — P0 critical · P1 important · P2 backlog</div>', unsafe_allow_html=True)
+    st.markdown('<div class="cc"><div class="cc-title">All Actions</div><div class="cc-sub">Sorted by priority: P0 critical · P1 important · P2 backlog</div>', unsafe_allow_html=True)
     if len(filt):
         for _,row in filt.sort_values(["priority","owner"]).iterrows():
             oc2={"Engineering":"eng","Product":"prd","Design":"des"}.get(row["owner"],"eng")
@@ -395,9 +407,9 @@ elif page == "Action Board":
     st.markdown('</div>', unsafe_allow_html=True)
 
 
-# PAGE 4 — FULL DATA
-elif page == "Full Data":
-    st.markdown('<div class="ph">Full Data</div>', unsafe_allow_html=True)
+# PAGE 4: FULL DATA
+elif page == "Data Explorer":
+    st.markdown('<div class="ph">Data Explorer</div>', unsafe_allow_html=True)
     st.markdown('<div class="psub">Complete results from 100 AI-processed review bundles across 20 apps. Filter by sentiment or app, explore raw AI summaries, and export structured data for further analysis.</div>', unsafe_allow_html=True)
     st.write("")
     st.write("")
@@ -407,7 +419,7 @@ elif page == "Full Data":
     with f1:
         sf = st.multiselect("Filter by Sentiment", ["positive","negative"],
                             default=["positive","negative"],
-                            help="Data only contains positive and negative — no mixed sentiment in this dataset")
+                            help="Data only contains positive and negative: no mixed sentiment in this dataset")
     with f2:
         appf = st.multiselect("Filter by App", apps, default=[])
 
@@ -422,13 +434,13 @@ elif page == "Full Data":
     pos_sel = int((rdf["sentiment"]=="positive").sum())
     neg_sel = int((rdf["sentiment"]=="negative").sum())
     with c1: st.markdown(kpi("Total Bundles",str(len(rdf)),"","kpi-trend-neu","in current filter"), unsafe_allow_html=True)
-    with c2: st.markdown(kpi("Positive",str(pos_sel),f"↑ {round(pos_sel/len(rdf)*100) if len(rdf) else 0}% of selection","kpi-trend-pos",""), unsafe_allow_html=True)
-    with c3: st.markdown(kpi("Negative",str(neg_sel),f"↓ {round(neg_sel/len(rdf)*100) if len(rdf) else 0}% of selection","kpi-trend-neg",""), unsafe_allow_html=True)
+    with c2: st.markdown(kpi("Positive",str(pos_sel),f"up {round(pos_sel/len(rdf)*100) if len(rdf) else 0}% of selection","kpi-trend-pos",""), unsafe_allow_html=True)
+    with c3: st.markdown(kpi("Negative",str(neg_sel),f"down {round(neg_sel/len(rdf)*100) if len(rdf) else 0}% of selection","kpi-trend-neg",""), unsafe_allow_html=True)
     with c4: st.markdown(kpi("Apps Shown",str(rdf["app"].nunique()),"","kpi-trend-neu","unique apps"), unsafe_allow_html=True)
 
     st.write("")
 
-    # Sentiment distribution — horizontal bar, no label overlap
+    # Sentiment distribution: horizontal bar, no label overlap
     if len(rdf) > 0:
         st.markdown('<div class="cc"><div class="cc-title">Sentiment Distribution</div><div class="cc-sub">Positive vs negative per app in current filter</div>', unsafe_allow_html=True)
         app_filt = rdf.groupby(["app","sentiment"]).size().reset_index(name="count")
@@ -452,7 +464,7 @@ elif page == "Full Data":
     st.write("")
 
     # Results table
-    st.markdown('<div class="cc"><div class="cc-title">Results Table</div><div class="cc-sub">All processed review bundles — AI-generated summaries</div>', unsafe_allow_html=True)
+    st.markdown('<div class="cc"><div class="cc-title">Results Table</div><div class="cc-sub">All processed review bundles: AI-generated summaries</div>', unsafe_allow_html=True)
     if len(rdf) > 0:
         disp = rdf[["app","sentiment","summary"]].copy()
         disp.columns = ["App","Sentiment","AI Summary"]

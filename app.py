@@ -5,7 +5,7 @@ import os
 import plotly.express as px
 import plotly.graph_objects as go
 
-st.set_page_config(page_title="Review AI Intelligence System", layout="wide", initial_sidebar_state="expanded", page_icon="chart_with_upwards_trend")
+st.set_page_config(page_title="AI Review Intelligence System", layout="wide", initial_sidebar_state="expanded", page_icon="chart_with_upwards_trend")
 
 st.markdown("""
 <style>
@@ -165,7 +165,7 @@ with st.sidebar:
 
 # PAGE 1: OVERVIEW
 if page == "Overview":
-    st.markdown('<div class="ph">Review AI Intelligence System</div>', unsafe_allow_html=True)
+    st.markdown('<div class="ph">AI Review Intelligence System</div>', unsafe_allow_html=True)
     st.markdown('<div class="psub">AI-powered Voice of Customer analytics across 200,000 Google Play reviews. Surfacing user sentiment, critical pain points, and prioritized product actions to drive faster, evidence-based decisions.</div>', unsafe_allow_html=True)
     st.write("")
     st.write("")

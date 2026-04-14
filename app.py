@@ -364,38 +364,48 @@ elif page == "App Analysis":
         if is_high_signal(d)
     ]))
 
-    cl, cr = st.columns(2)
+    # Pain Points
+    st.markdown('<div class="cc"><div class="cc-title">Pain Points</div><div class="cc-sub">Top friction areas from user reviews</div>', unsafe_allow_html=True)
+    if pains:
+        for p in pains[:8]:
+            st.markdown(f'<div class="prow">{p}</div>', unsafe_allow_html=True)
+    else:
+        st.caption("No significant pain points detected.")
+    st.markdown('</div>', unsafe_allow_html=True)
 
-    with cl:
-        st.markdown('<div class="cc"><div class="cc-title">Pain Points</div><div class="cc-sub">Top friction areas from user reviews</div>', unsafe_allow_html=True)
-        if pains:
-            for p in pains[:8]:
-                st.markdown(f'<div class="prow">{p}</div>', unsafe_allow_html=True)
-        else:
-            st.caption("No significant pain points detected.")
-        st.markdown('<div style="margin-top:1.2rem;padding-top:1rem;border-top:1px solid #1e1e1e"><div class="cc-title">Delighters</div><div class="cc-sub" style="margin-bottom:.6rem">What users consistently praise</div>', unsafe_allow_html=True)
-        if dels:
-            for d in dels[:8]:
-                st.markdown(f'<div class="drow">{d}</div>', unsafe_allow_html=True)
-        else:
-            st.caption("No delighter themes detected.")
-        st.markdown('</div></div>', unsafe_allow_html=True)
+    st.write("")
 
-    with cr:
-        st.markdown('<div class="cc"><div class="cc-title">Recommended Actions</div><div class="cc-sub">Triaged by severity for sprint intake</div>', unsafe_allow_html=True)
-        if aacts:
-            for a in sorted(aacts, key=lambda x: x.get("priority","")):
-                oc2 = {"Engineering":"eng","Product":"prd","Design":"des"}.get(a.get("owner",""),"eng")
-                pc2 = {"P0":"p0","P1":"p1","P2":"p2"}.get(a.get("priority",""),"p1")
-                rc  = {"P0":"arow arow-p0","P1":"arow arow-p1","P2":"arow arow-p2"}.get(a.get("priority",""),"arow")
-                st.markdown(f'<div class="{rc}"><span class="badge {pc2}">{a.get("priority","")}</span> <span class="badge {oc2}">{a.get("owner","")}</span> <span style="color:#e5e7eb">{a.get("action","")}</span></div>', unsafe_allow_html=True)
-        else:
-            st.caption("No actions flagged for this app.")
-        st.markdown('<div style="margin-top:1.2rem;padding-top:1rem;border-top:1px solid #1e1e1e"><div class="cc-title">AI Summaries</div><div class="cc-sub" style="margin-bottom:.6rem">Model-generated insight per bundle</div>', unsafe_allow_html=True)
-        for _,row in adf.iterrows():
-            bc = "pos" if row["sentiment"]=="positive" else "neg"
-            st.markdown(f'<div class="srow"><span class="badge {bc}">{row["sentiment"]}</span> &nbsp;{row["summary"]}</div>', unsafe_allow_html=True)
-        st.markdown('</div></div>', unsafe_allow_html=True)
+    # Delighters
+    st.markdown('<div class="cc"><div class="cc-title">Delighters</div><div class="cc-sub">What users consistently praise</div>', unsafe_allow_html=True)
+    if dels:
+        for d in dels[:8]:
+            st.markdown(f'<div class="drow">{d}</div>', unsafe_allow_html=True)
+    else:
+        st.caption("No delighter themes detected.")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    st.write("")
+
+    # Recommended Actions
+    st.markdown('<div class="cc"><div class="cc-title">Recommended Actions</div><div class="cc-sub">Triaged by severity for sprint intake</div>', unsafe_allow_html=True)
+    if aacts:
+        for a in sorted(aacts, key=lambda x: x.get("priority","")):
+            oc2 = {"Engineering":"eng","Product":"prd","Design":"des"}.get(a.get("owner",""),"eng")
+            pc2 = {"P0":"p0","P1":"p1","P2":"p2"}.get(a.get("priority",""),"p1")
+            rc  = {"P0":"arow arow-p0","P1":"arow arow-p1","P2":"arow arow-p2"}.get(a.get("priority",""),"arow")
+            st.markdown(f'<div class="{rc}"><span class="badge {pc2}">{a.get("priority","")}</span> <span class="badge {oc2}">{a.get("owner","")}</span> <span style="color:#e5e7eb">{a.get("action","")}</span></div>', unsafe_allow_html=True)
+    else:
+        st.caption("No actions flagged for this app.")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    st.write("")
+
+    # AI Summaries
+    st.markdown('<div class="cc"><div class="cc-title">AI Summaries</div><div class="cc-sub">Model-generated insight per bundle</div>', unsafe_allow_html=True)
+    for _,row in adf.iterrows():
+        bc = "pos" if row["sentiment"]=="positive" else "neg"
+        st.markdown(f'<div class="srow"><span class="badge {bc}">{row["sentiment"]}</span> &nbsp;{row["summary"]}</div>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
 
 # PAGE 3: ACTION BOARD

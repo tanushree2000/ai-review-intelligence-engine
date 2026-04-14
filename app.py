@@ -146,7 +146,9 @@ with st.sidebar:
 if page == "Daily Brief":
     st.markdown('<div class="ph">VoC Intelligence</div>', unsafe_allow_html=True)
     st.markdown('<div class="psub">Comprehensive insights into user sentiment, pain points, and product action priorities</div>', unsafe_allow_html=True)
-    with c1: st.markdown(kpi("Reviews Analyzed","200K",f"↑ 100 bundles processed","kpi-trend-pos","Google Play · 20 apps"), unsafe_allow_html=True)
+
+    c1,c2,c3,c4 = st.columns(4)
+    with c1: st.markdown(kpi("Reviews Analyzed","200K","↑ 100 bundles processed","kpi-trend-pos","Google Play · 20 apps"), unsafe_allow_html=True)
     with c2: st.markdown(kpi("Positive Sentiment",str(pos),f"↑ +{round(pos/total*100)}% of all bundles","kpi-trend-pos","Users satisfied"), unsafe_allow_html=True)
     with c3: st.markdown(kpi("Negative Sentiment",str(neg),f"↓ -{round(neg/total*100)}% needs attention","kpi-trend-neg","Users dissatisfied"), unsafe_allow_html=True)
     with c4: st.markdown(kpi("Critical P0 Issues",str(p0c),"↓ -2.1% Fix immediately","kpi-trend-neg","Before next release"), unsafe_allow_html=True)

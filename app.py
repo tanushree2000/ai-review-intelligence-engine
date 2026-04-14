@@ -14,6 +14,10 @@ st.markdown("""
 
 .main{background:#0d0d0d;}
 .main .block-container{background:#0d0d0d;padding:2rem 2.5rem;max-width:100%;}
+.stApp{background:#0d0d0d!important;}
+[data-testid="stAppViewContainer"]{background:#0d0d0d!important;}
+[data-testid="stHeader"]{background:#0d0d0d!important;}
+[data-testid="stToolbar"]{background:#0d0d0d!important;}
 
 section[data-testid="stSidebar"]{background:#111111!important;border-right:1px solid #1e1e1e!important;min-width:220px!important;max-width:220px!important;}
 section[data-testid="stSidebar"]>div{padding:1.8rem 1.2rem;}
@@ -142,8 +146,6 @@ with st.sidebar:
 if page == "Daily Brief":
     st.markdown('<div class="ph">VoC Intelligence</div>', unsafe_allow_html=True)
     st.markdown('<div class="psub">Comprehensive insights into user sentiment, pain points, and product action priorities</div>', unsafe_allow_html=True)
-
-    c1,c2,c3,c4 = st.columns(4)
     with c1: st.markdown(kpi("Reviews Analyzed","200K",f"↑ 100 bundles processed","kpi-trend-pos","Google Play · 20 apps"), unsafe_allow_html=True)
     with c2: st.markdown(kpi("Positive Sentiment",str(pos),f"↑ +{round(pos/total*100)}% of all bundles","kpi-trend-pos","Users satisfied"), unsafe_allow_html=True)
     with c3: st.markdown(kpi("Negative Sentiment",str(neg),f"↓ -{round(neg/total*100)}% needs attention","kpi-trend-neg","Users dissatisfied"), unsafe_allow_html=True)

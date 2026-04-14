@@ -181,9 +181,9 @@ if page == "Daily Brief":
             xaxis=dict(showgrid=False,tickangle=-45,title="",
                        tickfont=dict(color=FONT_COLOR,size=10),
                        linecolor=GRID_COLOR),
-            yaxis=dict(showgrid=True,gridcolor=GRID_COLOR,title="Count",
+            yaxis=dict(showgrid=True,gridcolor=GRID_COLOR,
                        tickfont=dict(color=FONT_COLOR),
-                       titlefont=dict(color=FONT_COLOR,size=11))
+                       title=dict(text="Count",font=dict(color=FONT_COLOR,size=11)))
         )
         fig.update_traces(marker_line_width=0)
         fig.update_layout(bargap=0.2)
@@ -210,13 +210,12 @@ if page == "Daily Brief":
             plot_bgcolor=PLOT_BG, paper_bgcolor=PAPER_BG, font=FONT,
             legend=dict(orientation="h",y=-0.3,x=0,bgcolor="rgba(0,0,0,0)",
                         font=dict(color=FONT_COLOR)),
-            xaxis=dict(showgrid=False,title="Bundle ID",
+            xaxis=dict(showgrid=False,linecolor=GRID_COLOR,
                        tickfont=dict(color=FONT_COLOR),
-                       titlefont=dict(color=FONT_COLOR,size=11),
-                       linecolor=GRID_COLOR),
-            yaxis=dict(showgrid=True,gridcolor=GRID_COLOR,title="Count",
+                       title=dict(text="Bundle ID",font=dict(color=FONT_COLOR,size=11))),
+            yaxis=dict(showgrid=True,gridcolor=GRID_COLOR,
                        tickfont=dict(color=FONT_COLOR),
-                       titlefont=dict(color=FONT_COLOR,size=11))
+                       title=dict(text="Count",font=dict(color=FONT_COLOR,size=11)))
         )
         st.plotly_chart(fig2, use_container_width=True, config={"displayModeBar":False})
         st.markdown('</div>', unsafe_allow_html=True)

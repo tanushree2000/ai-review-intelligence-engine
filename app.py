@@ -183,9 +183,10 @@ if page == "Daily Brief":
                        linecolor=GRID_COLOR),
             yaxis=dict(showgrid=True,gridcolor=GRID_COLOR,title="Count",
                        tickfont=dict(color=FONT_COLOR),
-                       titlefont=dict(color=FONT_COLOR,size=11)),
-            bargap=0.2
+                       titlefont=dict(color=FONT_COLOR,size=11))
         )
+        fig.update_traces(marker_line_width=0)
+        fig.update_layout(bargap=0.2)
         st.plotly_chart(fig, use_container_width=True, config={"displayModeBar":False})
         st.markdown('</div>', unsafe_allow_html=True)
 
